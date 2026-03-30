@@ -34,7 +34,8 @@ export default function Login() {
       const res = await axios.post(`${API}/api/auth/verify-otp`, { userId, otp });
       localStorage.setItem("token", res.data.token);
       localStorage.setItem("username", res.data.username);
-      navigate("/dashboard");
+      localStorage.setItem("role", res.data.role);
+      navigate(res.data.role === "admin" ? "/admin" : "/dashboard");
     } catch (err) {
       setError(err.response?.data?.message || "Verification failed");
     }

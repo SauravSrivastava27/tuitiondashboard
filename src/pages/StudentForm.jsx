@@ -29,7 +29,7 @@ export default function StudentForm() {
     } else {
       await api.post("/api/students", form);
     }
-    navigate("/");
+    navigate("/dashboard");
   };
 
   return (
