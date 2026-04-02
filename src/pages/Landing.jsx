@@ -136,7 +136,7 @@ export default function Landing() {
         <p style={styles.ctaSubtitle}>Join hundreds of students who are already excelling with BrightMinds.</p>
         <div style={styles.heroActions}>
           <button onClick={() => navigate("/register")} style={styles.primaryBtn}>Register Now</button>
-          <button onClick={() => navigate("/login")} style={{ ...styles.outlineBtn, borderColor: "#fff", color: "#fff" }}>Admin Login</button>
+          <button onClick={() => navigate("/login")} style={{ ...styles.outlineBtn, borderColor: "#fff", color: "#fff" }}>Login</button>
         </div>
       </section>
 
