@@ -54,6 +54,15 @@ body {
   margin: 0;
 }
 
+select {
+  color: #1a1a2e;
+}
+
+select option {
+  color: #1a1a2e;
+  background-color: #fff;
+}
+
 #root {
   width: 100%;
   min-height: 100svh;

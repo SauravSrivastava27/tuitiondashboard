@@ -85,22 +85,16 @@ export default function AdminDashboard() {
               color="#4f46e5"
             />
             <StatCard
-              title="Paid"
+              title="Collected"
               value={`₹${data.fees.paid.toLocaleString()}`}
               icon="✅"
               color="#16a34a"
             />
             <StatCard
-              title="Pending"
-              value={`₹${data.fees.pending.toLocaleString()}`}
+              title="Remaining"
+              value={`₹${data.fees.remaining.toLocaleString()}`}
               icon="⏳"
               color="#f59e0b"
-            />
-            <StatCard
-              title="Overdue"
-              value={`₹${data.fees.overdue.toLocaleString()}`}
-              icon="⚠️"
-              color="#ef4444"
             />
           </div>
         </div>

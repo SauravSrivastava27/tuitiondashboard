@@ -7,6 +7,7 @@ import Badge from "../components/Badge";
 import LoadingSpinner from "../components/LoadingSpinner";
 
 export default function AdminPanelNew() {
+  const currentUsername = localStorage.getItem("username");
   const [users, setUsers] = useState([]);
   const [students, setStudents] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -198,7 +199,13 @@ export default function AdminPanelNew() {
                       </td>
                       <td style={td}>
                         <div style={{ display: "flex", gap: "6px", flexWrap: "wrap" }}>
-                          <Button variant="outline" size="sm" onClick={() => handleEditRoleClick(user)}>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => handleEditRoleClick(user)}
+                            disabled={user.username === currentUsername}
+                            title={user.username === currentUsername ? "You cannot change your own role" : ""}
+                          >
                             Edit Role
                           </Button>
                           {user.role !== "admin" && (
@@ -206,7 +213,13 @@ export default function AdminPanelNew() {
                               {linked ? "Change Student" : "Link Student"}
                             </Button>
                           )}
-                          <Button variant="danger" size="sm" onClick={() => handleDelete(user._id, user.username)}>
+                          <Button
+                            variant="danger"
+                            size="sm"
+                            onClick={() => handleDelete(user._id, user.username)}
+                            disabled={user.username === currentUsername}
+                            title={user.username === currentUsername ? "You cannot delete your own account" : ""}
+                          >
                             Delete
                           </Button>
                         </div>

@@ -8,6 +8,7 @@ const navItems = [
   { label: "Students",  path: "/admin/students",  icon: "📚" },
   { label: "Fees",      path: "/admin/fees",      icon: "💰" },
   { label: "Reports",   path: "/admin/reports",   icon: "📈" },
+  { label: "Profile",   path: "/profile",         icon: "👤" },
 ];
 
 export default function Sidebar() {
