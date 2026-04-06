@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import Button from "./Button";
 
 const CredentialsModal = ({ isOpen, onClose, credentials, studentName, studentId }) => {
   const [copied, setCopied] = useState(null);
@@ -12,286 +13,104 @@ const CredentialsModal = ({ isOpen, onClose, credentials, studentName, studentId
   if (!isOpen) return null;
 
   return (
-    <div style={styles.overlay}>
-      <div style={styles.modal}>
+    <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-[1000] p-4 backdrop-blur-sm">
+      <div className="nb-modal max-w-[500px] w-full max-h-[90vh] overflow-y-auto">
         {/* Header */}
-        <div style={styles.header}>
+        <div className="flex justify-between items-start mb-8 border-b-3 border-nb-black pb-4 bg-nb-green/10 -m-8 p-8 mb-0">
           <div>
-            <h2 style={styles.title}>✓ User Created Successfully</h2>
-            <p style={styles.subtitle}>for {studentName}</p>
+            <h2 className="text-2xl font-black uppercase tracking-tighter text-nb-green m-0 drop-shadow-[1px_1px_0px_black]">
+              ✓ Success
+            </h2>
+            <p className="text-xs font-bold uppercase tracking-widest text-nb-black/60 mt-1">
+              Account created for {studentName}
+            </p>
           </div>
-          <button onClick={onClose} style={styles.closeButton}>✕</button>
+          <button 
+            onClick={onClose} 
+            className="bg-nb-pink border-2 border-nb-black p-1 leading-none hover:bg-pink-400 shadow-[2px_2px_0px_black] active:translate-x-1 active:translate-y-1 active:shadow-none"
+          >
+            <span className="text-xl font-bold text-white px-1">✕</span>
+          </button>
         </div>
 
         {/* Content */}
-        <div style={styles.content}>
-          <p style={styles.instruction}>
-            Share these credentials with the student. Student can login with these right away.
+        <div className="pt-8">
+          <p className="font-bold text-sm text-nb-black/70 mb-6 italic border-l-4 border-nb-yellow pl-4">
+            Share these credentials with the student. They can login and access their dashboard immediately.
           </p>
 
           {/* Student Info */}
           {studentId && (
-            <div style={styles.studentInfoBox}>
-              <div style={styles.infoRow}>
-                <span style={styles.infoLabel}>Student ID:</span>
-                <code style={styles.infoValue}>{studentId}</code>
-              </div>
+            <div className="nb-card bg-nb-blue/5 border-2 shadow-[4px_4px_0px_black] mb-6 p-4 flex justify-between items-center">
+              <span className="text-[10px] font-black uppercase tracking-widest text-nb-black/60">Student ID</span>
+              <code className="bg-white border-2 border-nb-black px-3 py-1 font-black text-xs">{studentId}</code>
             </div>
           )}
 
           {/* Credentials Box */}
-          <div style={styles.credentialsBox}>
-            <div style={styles.credentialField}>
-              <label style={styles.label}>Username</label>
-              <div style={styles.fieldWithCopy}>
-                <code style={styles.credentialValue}>{credentials?.username}</code>
-                <button
+          <div className="nb-card bg-white border-3 shadow-[6px_6px_0px_black] mb-8">
+            <div className="mb-6">
+              <label className="text-[10px] font-black uppercase tracking-widest text-nb-black/50 mb-2 block">Username</label>
+              <div className="flex gap-2">
+                <code className="flex-1 bg-nb-yellow/5 border-2 border-nb-black p-3 font-black text-sm uppercase tracking-wider overflow-hidden text-ellipsis">
+                  {credentials?.username}
+                </code>
+                <Button
                   onClick={() => handleCopy(credentials?.username, "username")}
-                  style={{
-                    ...styles.copyButton,
-                    backgroundColor: copied === "username" ? "#10b981" : "#3b82f6"
-                  }}
+                  variant={copied === "username" ? "primary" : "outline"}
+                  size="sm"
+                  className={`!shadow-none border-2 ${copied === "username" ? "bg-nb-green hover:bg-nb-green" : "bg-white"}`}
                 >
-                  {copied === "username" ? "✓ Copied" : "Copy"}
-                </button>
+                  {copied === "username" ? "✓" : "Copy"}
+                </Button>
               </div>
             </div>
 
-            <div style={styles.credentialField}>
-              <label style={styles.label}>Password</label>
-              <div style={styles.fieldWithCopy}>
-                <code style={styles.credentialValue}>{credentials?.password}</code>
-                <button
+            <div className="mb-2">
+              <label className="text-[10px] font-black uppercase tracking-widest text-nb-black/50 mb-2 block">Temporary Password</label>
+              <div className="flex gap-2">
+                <code className="flex-1 bg-nb-pink/5 border-2 border-nb-black p-3 font-black text-sm tracking-widest overflow-hidden text-ellipsis">
+                  {credentials?.password}
+                </code>
+                <Button
                   onClick={() => handleCopy(credentials?.password, "password")}
-                  style={{
-                    ...styles.copyButton,
-                    backgroundColor: copied === "password" ? "#10b981" : "#3b82f6"
-                  }}
+                  variant={copied === "password" ? "primary" : "outline"}
+                  size="sm"
+                  className={`!shadow-none border-2 ${copied === "password" ? "bg-nb-green hover:bg-nb-green" : "bg-white"}`}
                 >
-                  {copied === "password" ? "✓ Copied" : "Copy"}
-                </button>
+                  {copied === "password" ? "✓" : "Copy"}
+                </Button>
               </div>
             </div>
           </div>
 
-          {/* 2FA QR Code - Not shown on initial creation */}
-          {/* Users can enable 2FA from their profile settings */}
-
-          {/* Setup Instructions */}
-          <div style={styles.instructions}>
-            <h3 style={styles.instructionTitle}>Next Steps:</h3>
-            <ol style={styles.instructionList}>
-              <li>Share username and password with student</li>
-              <li>Student logs in with these credentials</li>
-              <li>Student can change password if desired</li>
-              <li>Optional: Student can enable 2FA from profile settings for extra security</li>
-            </ol>
+          {/* Next Steps */}
+          <div className="nb-card bg-nb-blue/5 border-2 shadow-none mb-6">
+            <h3 className="text-sm font-black uppercase tracking-widest mb-4 flex items-center gap-2">
+              <span className="bg-nb-blue text-white p-1 text-[10px] border border-nb-black">!</span> Next Steps
+            </h3>
+            <ul className="text-xs font-bold text-nb-black/70 space-y-3 list-none p-0">
+              <li className="flex gap-3 items-start"><span className="text-nb-blue">→</span> Securely share credentials with the student.</li>
+              <li className="flex gap-3 items-start"><span className="text-nb-blue">→</span> Student must login at the main portal.</li>
+              <li className="flex gap-3 items-start"><span className="text-nb-blue">→</span> Changing password is recommended after first login.</li>
+            </ul>
           </div>
         </div>
 
         {/* Actions */}
-        <div style={styles.actions}>
-          <button onClick={onClose} style={styles.primaryButton}>
+        <div className="mt-8">
+          <Button 
+            onClick={onClose} 
+            variant="primary" 
+            className="w-full uppercase tracking-widest py-3 bg-nb-green hover:bg-green-400"
+          >
             Acknowledge & Close
-          </button>
+          </Button>
         </div>
       </div>
     </div>
   );
 };
 
-const styles = {
-  overlay: {
-    position: "fixed",
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    backgroundColor: "rgba(0, 0, 0, 0.5)",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    zIndex: 1000,
-  },
-  modal: {
-    backgroundColor: "#fff",
-    borderRadius: "8px",
-    boxShadow: "0 10px 40px rgba(0, 0, 0, 0.2)",
-    maxWidth: "500px",
-    width: "90%",
-    maxHeight: "90vh",
-    overflowY: "auto",
-  },
-  header: {
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "flex-start",
-    padding: "24px",
-    borderBottom: "1px solid #e5e7eb",
-    backgroundColor: "#f0fdf4",
-  },
-  title: {
-    margin: "0 0 8px 0",
-    fontSize: "20px",
-    fontWeight: "600",
-    color: "#059669",
-  },
-  subtitle: {
-    margin: 0,
-    fontSize: "14px",
-    color: "#666",
-  },
-  closeButton: {
-    background: "none",
-    border: "none",
-    fontSize: "24px",
-    cursor: "pointer",
-    color: "#9ca3af",
-    padding: "0",
-    marginLeft: "12px",
-    transition: "color 0.2s",
-  },
-  content: {
-    padding: "24px",
-  },
-  instruction: {
-    fontSize: "14px",
-    color: "#666",
-    marginBottom: "20px",
-    marginTop: 0,
-  },
-  studentInfoBox: {
-    backgroundColor: "#eff6ff",
-    border: "1px solid #93c5fd",
-    borderRadius: "6px",
-    padding: "12px",
-    marginBottom: "20px",
-  },
-  infoRow: {
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "center",
-    gap: "12px",
-  },
-  infoLabel: {
-    fontSize: "13px",
-    fontWeight: "600",
-    color: "#1e40af",
-  },
-  infoValue: {
-    fontSize: "13px",
-    fontFamily: "monospace",
-    backgroundColor: "#fff",
-    padding: "4px 8px",
-    borderRadius: "3px",
-    border: "1px solid #93c5fd",
-  },
-  credentialsBox: {
-    backgroundColor: "#f9fafb",
-    border: "1px solid #e5e7eb",
-    borderRadius: "6px",
-    padding: "16px",
-    marginBottom: "24px",
-  },
-  credentialField: {
-    marginBottom: "16px",
-  },
-  label: {
-    display: "block",
-    fontSize: "12px",
-    fontWeight: "600",
-    color: "#374151",
-    textTransform: "uppercase",
-    marginBottom: "6px",
-  },
-  fieldWithCopy: {
-    display: "flex",
-    gap: "8px",
-    alignItems: "center",
-  },
-  credentialValue: {
-    flex: 1,
-    padding: "8px 12px",
-    backgroundColor: "#fff",
-    border: "1px solid #d1d5db",
-    borderRadius: "4px",
-    fontSize: "13px",
-    fontFamily: "monospace",
-    margin: 0,
-    wordBreak: "break-all",
-  },
-  copyButton: {
-    padding: "6px 12px",
-    border: "none",
-    borderRadius: "4px",
-    color: "#fff",
-    fontSize: "12px",
-    fontWeight: "500",
-    cursor: "pointer",
-    transition: "background-color 0.2s",
-    whiteSpace: "nowrap",
-  },
-  qrSection: {
-    textAlign: "center",
-    marginBottom: "24px",
-    padding: "16px",
-    backgroundColor: "#f3f4f6",
-    borderRadius: "6px",
-  },
-  qrTitle: {
-    margin: "0 0 12px 0",
-    fontSize: "14px",
-    fontWeight: "600",
-    color: "#1f2937",
-  },
-  qrImage: {
-    maxWidth: "200px",
-    border: "1px solid #d1d5db",
-    borderRadius: "4px",
-    marginBottom: "12px",
-  },
-  qrHelp: {
-    margin: 0,
-    fontSize: "12px",
-    color: "#666",
-  },
-  instructions: {
-    backgroundColor: "#eff6ff",
-    border: "1px solid #93c5fd",
-    borderRadius: "6px",
-    padding: "16px",
-    marginBottom: "20px",
-  },
-  instructionTitle: {
-    margin: "0 0 12px 0",
-    fontSize: "13px",
-    fontWeight: "600",
-    color: "#1e40af",
-  },
-  instructionList: {
-    margin: 0,
-    paddingLeft: "20px",
-    fontSize: "13px",
-    color: "#1f2937",
-  },
-  actions: {
-    padding: "16px 24px",
-    borderTop: "1px solid #e5e7eb",
-    display: "flex",
-    justifyContent: "flex-end",
-    gap: "12px",
-  },
-  primaryButton: {
-    padding: "10px 24px",
-    backgroundColor: "#059669",
-    color: "#fff",
-    border: "none",
-    borderRadius: "4px",
-    cursor: "pointer",
-    fontSize: "14px",
-    fontWeight: "500",
-    transition: "background-color 0.2s",
-  },
-};
-
 export default CredentialsModal;
+

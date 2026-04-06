@@ -8,39 +8,15 @@ export default function Input({
   error = null,
   required = false,
   placeholder = "",
+  className = "",
   ...props
 }) {
-  const inputStyle = {
-    width: "100%",
-    padding: "10px 12px",
-    border: error ? "1px solid #ef4444" : "1px solid #d1d5db",
-    borderRadius: "6px",
-    fontSize: "14px",
-    fontFamily: "'Segoe UI', Roboto, sans-serif",
-    boxSizing: "border-box",
-    transition: "border-color 0.2s ease",
-  };
-
-  const labelStyle = {
-    display: "block",
-    fontSize: "14px",
-    fontWeight: "600",
-    color: "#374151",
-    marginBottom: "6px",
-  };
-
-  const errorStyle = {
-    fontSize: "12px",
-    color: "#ef4444",
-    marginTop: "4px",
-  };
-
   return (
-    <div style={{ marginBottom: "16px" }}>
+    <div className={`mb-5 ${className}`}>
       {label && (
-        <label style={labelStyle}>
+        <label className="block text-sm font-bold mb-2 uppercase tracking-tight text-nb-black">
           {label}
-          {required && <span style={{ color: "#ef4444" }}>*</span>}
+          {required && <span className="text-nb-pink ml-1">*</span>}
         </label>
       )}
       <input
@@ -48,11 +24,12 @@ export default function Input({
         value={value}
         onChange={onChange}
         placeholder={placeholder}
-        style={inputStyle}
+        className={`nb-input ${error ? 'border-nb-pink ring-2 ring-nb-pink ring-inset' : ''}`}
         required={required}
         {...props}
       />
-      {error && <div style={errorStyle}>{error}</div>}
+      {error && <div className="text-xs font-bold text-nb-pink mt-2 uppercase">{error}</div>}
     </div>
   );
 }
+

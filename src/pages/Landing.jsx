@@ -1,215 +1,123 @@
 import { useNavigate } from "react-router-dom";
+import Button from "../components/Button";
 
 export default function Landing() {
   const navigate = useNavigate();
 
   return (
-    <div style={styles.page}>
+    <div className="bg-[#f0f0f0] min-h-screen font-sans text-nb-black selection:bg-nb-yellow">
       {/* Navbar */}
-      <nav style={styles.nav}>
-        <div style={styles.navBrand}>
-          <span style={styles.brandIcon}>📚</span>
-          <span style={styles.brandName}>BrightMinds Tuition</span>
+      <nav className="flex justify-between items-center px-8 py-4 bg-white border-b-5 border-nb-black sticky top-0 z-[100] shadow-[0_4px_0_0_rgba(0,0,0,1)]">
+        <div className="flex items-center gap-3">
+          <span className="text-3xl filter drop-shadow-[2px_2px_0px_black]">📚</span>
+          <span className="text-xl font-black uppercase tracking-tighter italic">BrightMinds Tuition</span>
         </div>
-        <div style={styles.navButtons}>
-          <button onClick={() => navigate("/login")} style={styles.navLoginBtn}>Login</button>
-          <button onClick={() => navigate("/register")} style={styles.navRegisterBtn}>Register</button>
+        <div className="flex gap-4">
+          <Button variant="outline" size="sm" onClick={() => navigate("/login")} className="bg-white">Login</Button>
+          <Button variant="primary" size="sm" onClick={() => navigate("/register")}>Register</Button>
         </div>
       </nav>
 
       {/* Hero */}
-      <section style={styles.hero}>
-        <div style={styles.heroBadge}>Trusted by 500+ students</div>
-        <h1 style={styles.heroTitle}>
+      <section className="px-8 pt-24 pb-16 max-w-[900px] mx-auto text-center">
+        <div className="inline-block bg-nb-blue border-2 border-nb-black px-4 py-1 font-bold text-xs uppercase tracking-widest mb-8 shadow-[3px_3px_0px_black]">
+          Trusted by 500+ students
+        </div>
+        <h1 className="text-6xl md:text-7xl font-black uppercase leading-[0.9] mb-8 tracking-tighter">
           Shaping Futures,<br />
-          <span style={styles.heroAccent}>One Student at a Time</span>
+          <span className="text-nb-pink drop-shadow-[4px_4px_0px_black] [-webkit-text-stroke:2px_black]">One Student at a Time</span>
         </h1>
-        <p style={styles.heroSubtitle}>
+        <p className="text-lg font-bold text-nb-black/70 mb-12 max-w-[650px] mx-auto border-l-5 border-nb-yellow pl-6 text-left">
           Quality education, personalised attention, and a nurturing environment — helping students
           excel academically and grow with confidence.
         </p>
-        <div style={styles.heroActions}>
-          <button onClick={() => navigate("/register")} style={styles.primaryBtn}>Get Started</button>
-          <button onClick={() => navigate("/login")} style={styles.outlineBtn}>Login to Dashboard</button>
+        <div className="flex gap-6 justify-center flex-wrap">
+          <Button variant="primary" size="lg" onClick={() => navigate("/register")} className="!px-10 !text-xl uppercase tracking-widest">Get Started</Button>
+          <Button variant="outline" size="lg" onClick={() => navigate("/login")} className="bg-white !px-10 !text-xl uppercase tracking-widest">Dashboard</Button>
         </div>
       </section>
 
       {/* Stats */}
-      <section style={styles.statsRow}>
+      <section className="flex justify-center gap-0 bg-nb-black py-16 flex-wrap border-y-5 border-nb-black">
         {[
-          { number: "500+", label: "Students Enrolled" },
-          { number: "10+", label: "Years of Experience" },
-          { number: "95%", label: "Pass Rate" },
-          { number: "20+", label: "Subjects Covered" },
+          { number: "500+", label: "Students Enrolled", color: "text-nb-yellow" },
+          { number: "10+", label: "Years of Experience", color: "text-nb-pink" },
+          { number: "95%", label: "Pass Rate", color: "text-nb-blue" },
+          { number: "20+", label: "Subjects Covered", color: "text-nb-green" },
         ].map((s) => (
-          <div key={s.label} style={styles.statCard}>
-            <div style={styles.statNumber}>{s.number}</div>
-            <div style={styles.statLabel}>{s.label}</div>
+          <div key={s.label} className="text-center px-12 py-6 border-r-2 border-white/20 last:border-r-0">
+            <div className={`text-5xl font-black mb-2 ${s.color}`}>{s.number}</div>
+            <div className="text-xs font-bold uppercase tracking-widest text-white/60">{s.label}</div>
           </div>
         ))}
       </section>
 
       {/* Our Story */}
-      <section style={styles.section}>
-        <h2 style={styles.sectionTitle}>Our Story</h2>
-        <p style={styles.sectionSubtitle}>How BrightMinds began</p>
-        <div style={styles.storyGrid}>
-          <div style={styles.storyCard}>
-            <div style={styles.storyYear}>2014</div>
-            <h3 style={styles.storyHeading}>The Beginning</h3>
-            <p style={styles.storyText}>
-              BrightMinds Tuition started in a small room with just 5 students and a single teacher
-              who believed every child deserves personalised attention. Armed with a passion for
-              teaching and a whiteboard, the journey began.
-            </p>
-          </div>
-          <div style={styles.storyCard}>
-            <div style={styles.storyYear}>2018</div>
-            <h3 style={styles.storyHeading}>Growing Together</h3>
-            <p style={styles.storyText}>
-              Word spread quickly. Parents trusted us because they saw results. We expanded to
-              multiple classrooms, brought in experienced teachers, and began covering classes from
-              Grade 1 all the way through to Grade 12.
-            </p>
-          </div>
-          <div style={styles.storyCard}>
-            <div style={styles.storyYear}>Today</div>
-            <h3 style={styles.storyHeading}>A Community</h3>
-            <p style={styles.storyText}>
-              Today, BrightMinds is more than a tuition centre — it's a community. Over 500 students
-              trust us with their education, and we continue to deliver personalised, result-oriented
-              coaching with care and dedication.
-            </p>
-          </div>
+      <section className="px-8 py-24 max-w-[1240px] mx-auto">
+        <h2 className="text-center mb-2">Our Story</h2>
+        <p className="text-center font-bold uppercase tracking-widest text-nb-black/50 mb-16 italic">How BrightMinds began</p>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          {[
+            { year: "2014", title: "The Beginning", text: "BrightMinds Tuition started in a small room with just 5 students and a single teacher who believed every child deserves personalised attention.", color: "bg-nb-yellow" },
+            { year: "2018", title: "Growing Together", text: "Word spread quickly. Parents trusted us because they saw results. We expanded to multiple classrooms and brought in subject experts.", color: "bg-nb-pink" },
+            { year: "Today", title: "A Community", text: "Today, BrightMinds is more than a tuition centre — it's a community of 500+ students excelling with care and dedication.", color: "bg-nb-blue" },
+          ].map((story) => (
+            <div key={story.year} className="nb-card hover:-translate-y-2 transition-transform">
+              <div className={`${story.color} border-2 border-nb-black px-3 py-1 font-bold text-xs uppercase inline-block mb-4 shadow-[2px_2px_0px_black]`}>
+                {story.year}
+              </div>
+              <h3 className="text-xl font-black uppercase mb-4 tracking-tight">{story.title}</h3>
+              <p className="font-medium text-nb-black/80 leading-relaxed italic">{story.text}</p>
+            </div>
+          ))}
         </div>
       </section>
 
       {/* Why Us */}
-      <section style={{ ...styles.section, backgroundColor: "#f8f7ff" }}>
-        <h2 style={styles.sectionTitle}>Why Choose Us</h2>
-        <p style={styles.sectionSubtitle}>What makes BrightMinds different</p>
-        <div style={styles.featuresGrid}>
-          {[
-            { icon: "🎯", title: "Personalised Attention", desc: "Small batch sizes ensure every student gets the focus they deserve, not lost in a crowd." },
-            { icon: "📊", title: "Regular Progress Tracking", desc: "Parents stay informed with regular updates, tests, and detailed progress reports." },
-            { icon: "👩‍🏫", title: "Experienced Teachers", desc: "Our teachers are subject experts with years of experience making complex topics simple." },
-            { icon: "🏆", title: "Proven Results", desc: "95% of our students show significant grade improvement within the first semester." },
-            { icon: "📅", title: "Flexible Schedules", desc: "Morning and evening batches to fit every student's school timetable and routine." },
-            { icon: "💬", title: "Doubt Sessions", desc: "Dedicated doubt-clearing sessions so no student ever feels stuck or left behind." },
-          ].map((f) => (
-            <div key={f.title} style={styles.featureCard}>
-              <div style={styles.featureIcon}>{f.icon}</div>
-              <h3 style={styles.featureTitle}>{f.title}</h3>
-              <p style={styles.featureDesc}>{f.desc}</p>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* Testimonials */}
-      <section style={styles.section}>
-        <h2 style={styles.sectionTitle}>What Parents Say</h2>
-        <p style={styles.sectionSubtitle}>Real stories from our community</p>
-        <div style={styles.testimonialsGrid}>
-          {[
-            { name: "Priya Sharma", role: "Parent of Class 10 student", text: "My daughter's marks improved from 55% to 88% in one year. The teachers here genuinely care about each child." },
-            { name: "Rajesh Verma", role: "Parent of Class 8 student", text: "What I love most is the regular feedback. I always know how my son is doing without having to ask." },
-            { name: "Sunita Patel", role: "Parent of Class 12 student", text: "My son cracked his boards with distinction. BrightMinds gave him the confidence and preparation he needed." },
-          ].map((t) => (
-            <div key={t.name} style={styles.testimonialCard}>
-              <p style={styles.testimonialText}>"{t.text}"</p>
-              <div style={styles.testimonialAuthor}>
-                <div style={styles.authorAvatar}>{t.name[0]}</div>
-                <div>
-                  <div style={styles.authorName}>{t.name}</div>
-                  <div style={styles.authorRole}>{t.role}</div>
-                </div>
+      <section className="bg-white border-y-5 border-nb-black py-24">
+        <div className="px-8 max-w-[1240px] mx-auto">
+          <h2 className="text-center mb-2">Why Choose Us</h2>
+          <p className="text-center font-bold uppercase tracking-widest text-nb-black/50 mb-16 italic">What makes BrightMinds different</p>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {[
+              { icon: "🎯", title: "Personalised Attention", desc: "Small batch sizes ensure every student gets the focus they deserve, not lost in a crowd.", color: "bg-nb-yellow/10" },
+              { icon: "📊", title: "Progress Tracking", desc: "Parents stay informed with regular updates, tests, and detailed progress reports.", color: "bg-nb-pink/10" },
+              { icon: "👩‍🏫", title: "Expert Teachers", desc: "Our teachers are subject experts with years of experience making complex topics simple.", color: "bg-nb-blue/10" },
+              { icon: "🏆", title: "Proven Results", desc: "95% of our students show significant grade improvement within the first semester.", color: "bg-nb-green/10" },
+              { icon: "📅", title: "Flexible Schedules", desc: "Morning and evening batches to fit every student's school timetable and routine.", color: "bg-nb-yellow/10" },
+              { icon: "💬", title: "Doubt Sessions", desc: "Dedicated doubt-clearing sessions so no student ever feels stuck or left behind.", color: "bg-nb-pink/10" },
+            ].map((f) => (
+              <div key={f.title} className={`nb-card ${f.color} hover:rotate-1 transition-transform cursor-pointer`}>
+                <div className="text-4xl mb-4 filter drop-shadow-[2px_2px_0px_black]">{f.icon}</div>
+                <h3 className="text-lg font-black uppercase mb-2 tracking-tight">{f.title}</h3>
+                <p className="font-medium text-nb-black/70 leading-relaxed">{f.desc}</p>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
       </section>
 
       {/* CTA */}
-      <section style={styles.cta}>
-        <h2 style={styles.ctaTitle}>Ready to Start Your Journey?</h2>
-        <p style={styles.ctaSubtitle}>Join hundreds of students who are already excelling with BrightMinds.</p>
-        <div style={styles.heroActions}>
-          <button onClick={() => navigate("/register")} style={styles.primaryBtn}>Register Now</button>
-          <button onClick={() => navigate("/login")} style={{ ...styles.outlineBtn, borderColor: "#fff", color: "#fff" }}>Login</button>
+      <section className="bg-nb-pink py-24 text-center border-b-5 border-nb-black shadow-[inset_0_8px_0_0_rgba(0,0,0,0.1)]">
+        <div className="px-8 max-w-[800px] mx-auto">
+          <h2 className="text-5xl font-black uppercase text-white mb-6 drop-shadow-[1px_1px_0px_black] [-webkit-text-stroke:1px_black]">
+            Ready to Start Your Journey?
+          </h2>
+          <p className="text-xl font-bold text-white mb-10 uppercase tracking-widest leading-tight">
+            Join hundreds of students who are already excelling with BrightMinds.
+          </p>
+          <div className="flex gap-6 justify-center flex-wrap">
+            <Button variant="primary" size="lg" onClick={() => navigate("/register")} className="!px-12 !text-xl bg-nb-yellow hover:bg-yellow-400">Register Now</Button>
+            <Button variant="outline" size="lg" onClick={() => navigate("/login")} className="bg-white !px-12 !text-xl">Login</Button>
+          </div>
         </div>
       </section>
 
       {/* Footer */}
-      <footer style={styles.footer}>
-        <p style={styles.footerText}>© 2024 BrightMinds Tuition. All rights reserved.</p>
+      <footer className="bg-nb-black py-8 text-center border-t-2 border-white/10">
+        <p className="text-xs font-bold uppercase tracking-[0.3em] text-white/40">© 2024 BrightMinds Tuition. All rights reserved.</p>
       </footer>
     </div>
   );
 }
 
-const styles = {
-  page: { fontFamily: "'Segoe UI', Roboto, sans-serif", color: "#1a1a2e", backgroundColor: "#fff", minHeight: "100vh", textAlign: "left" },
-
-  // Navbar
-  nav: { display: "flex", justifyContent: "space-between", alignItems: "center", padding: "1rem 2rem", borderBottom: "1px solid #eee", backgroundColor: "#fff", position: "sticky", top: 0, zIndex: 100 },
-  navBrand: { display: "flex", alignItems: "center", gap: "10px" },
-  brandIcon: { fontSize: "24px" },
-  brandName: { fontSize: "18px", fontWeight: "700", color: "#4f46e5" },
-  navButtons: { display: "flex", gap: "12px" },
-  navLoginBtn: { padding: "8px 20px", border: "1px solid #4f46e5", borderRadius: "6px", backgroundColor: "transparent", color: "#4f46e5", fontWeight: "600", cursor: "pointer", fontSize: "14px" },
-  navRegisterBtn: { padding: "8px 20px", border: "none", borderRadius: "6px", backgroundColor: "#4f46e5", color: "#fff", fontWeight: "600", cursor: "pointer", fontSize: "14px" },
-
-  // Hero
-  hero: { padding: "80px 2rem 60px", maxWidth: "800px", margin: "0 auto", textAlign: "center" },
-  heroBadge: { display: "inline-block", backgroundColor: "#ede9fe", color: "#4f46e5", padding: "6px 16px", borderRadius: "100px", fontSize: "13px", fontWeight: "600", marginBottom: "24px" },
-  heroTitle: { fontSize: "52px", fontWeight: "800", lineHeight: "1.15", margin: "0 0 20px", color: "#0f0a23" },
-  heroAccent: { color: "#4f46e5" },
-  heroSubtitle: { fontSize: "18px", color: "#555", lineHeight: "1.7", marginBottom: "36px", maxWidth: "600px", margin: "0 auto 36px" },
-  heroActions: { display: "flex", gap: "16px", justifyContent: "center", flexWrap: "wrap" },
-  primaryBtn: { padding: "14px 32px", backgroundColor: "#4f46e5", color: "#fff", border: "none", borderRadius: "8px", fontSize: "16px", fontWeight: "600", cursor: "pointer" },
-  outlineBtn: { padding: "14px 32px", backgroundColor: "transparent", color: "#4f46e5", border: "2px solid #4f46e5", borderRadius: "8px", fontSize: "16px", fontWeight: "600", cursor: "pointer" },
-
-  // Stats
-  statsRow: { display: "flex", justifyContent: "center", gap: "0", backgroundColor: "#4f46e5", padding: "40px 2rem", flexWrap: "wrap" },
-  statCard: { textAlign: "center", padding: "0 40px", borderRight: "1px solid rgba(255,255,255,0.2)" },
-  statNumber: { fontSize: "40px", fontWeight: "800", color: "#fff" },
-  statLabel: { fontSize: "14px", color: "rgba(255,255,255,0.8)", marginTop: "4px" },
-
-  // Sections
-  section: { padding: "80px 2rem", maxWidth: "1200px", margin: "0 auto", width: "100%", boxSizing: "border-box" },
-  sectionTitle: { fontSize: "36px", fontWeight: "800", textAlign: "center", margin: "0 0 8px", color: "#0f0a23" },
-  sectionSubtitle: { textAlign: "center", color: "#888", marginBottom: "48px", fontSize: "16px" },
-
-  // Story
-  storyGrid: { display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: "24px" },
-  storyCard: { padding: "32px", border: "1px solid #eee", borderRadius: "12px", position: "relative" },
-  storyYear: { fontSize: "13px", fontWeight: "700", color: "#4f46e5", backgroundColor: "#ede9fe", display: "inline-block", padding: "4px 12px", borderRadius: "100px", marginBottom: "16px" },
-  storyHeading: { fontSize: "20px", fontWeight: "700", margin: "0 0 12px", color: "#0f0a23" },
-  storyText: { fontSize: "15px", color: "#666", lineHeight: "1.7", margin: 0 },
-
-  // Features
-  featuresGrid: { display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: "24px" },
-  featureCard: { padding: "28px", backgroundColor: "#fff", borderRadius: "12px", boxShadow: "0 2px 12px rgba(0,0,0,0.06)" },
-  featureIcon: { fontSize: "32px", marginBottom: "14px" },
-  featureTitle: { fontSize: "17px", fontWeight: "700", margin: "0 0 8px", color: "#0f0a23" },
-  featureDesc: { fontSize: "14px", color: "#666", lineHeight: "1.7", margin: 0 },
-
-  // Testimonials
-  testimonialsGrid: { display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: "24px" },
-  testimonialCard: { padding: "28px", border: "1px solid #eee", borderRadius: "12px", display: "flex", flexDirection: "column", gap: "20px" },
-  testimonialText: { fontSize: "15px", color: "#444", lineHeight: "1.75", fontStyle: "italic", margin: 0 },
-  testimonialAuthor: { display: "flex", alignItems: "center", gap: "12px" },
-  authorAvatar: { width: "42px", height: "42px", borderRadius: "50%", backgroundColor: "#4f46e5", color: "#fff", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: "700", fontSize: "16px", flexShrink: 0 },
-  authorName: { fontWeight: "700", fontSize: "14px", color: "#0f0a23" },
-  authorRole: { fontSize: "12px", color: "#888" },
-
-  // CTA
-  cta: { backgroundColor: "#4f46e5", padding: "80px 2rem", textAlign: "center" },
-  ctaTitle: { fontSize: "36px", fontWeight: "800", color: "#fff", margin: "0 0 12px" },
-  ctaSubtitle: { color: "rgba(255,255,255,0.85)", fontSize: "16px", marginBottom: "36px" },
-
-  // Footer
-  footer: { backgroundColor: "#0f0a23", padding: "24px 2rem", textAlign: "center" },
-  footerText: { color: "#888", fontSize: "14px", margin: 0 },
-};

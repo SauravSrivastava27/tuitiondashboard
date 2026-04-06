@@ -6,52 +6,40 @@ export default function Button({
   size = "md",
   disabled = false,
   onClick,
+  className = "",
+  rotate = false,
   ...props
 }) {
-  const baseStyle = {
-    fontWeight: "600",
-    border: "none",
-    borderRadius: " 6px",
-    cursor: disabled ? "not-allowed" : "pointer",
-    fontSize: size === "sm" ? "12px" : size === "lg" ? "16px" : "14px",
-    padding: size === "sm" ? "6px 12px" : size === "lg" ? "12px 20px" : "8px 16px",
-    transition: "all 0.2s ease",
-    opacity: disabled ? 0.6 : 1,
+  const variantClasses = {
+    primary: "nb-button-primary",
+    secondary: "nb-button-secondary",
+    danger: "nb-button bg-nb-pink text-white hover:bg-nb-pink",
+    outline: "nb-button bg-white hover:bg-nb-yellow/10",
+    accent: "nb-button-accent text-white",
+    success: "nb-button bg-nb-green hover:bg-nb-green",
   };
 
-  const variants = {
-    primary: {
-      ...baseStyle,
-      backgroundColor: "#4f46e5",
-      color: "#fff",
-    },
-    secondary: {
-      ...baseStyle,
-      backgroundColor: "transparent",
-      color: "#4f46e5",
-      border: "1px solid #4f46e5",
-    },
-    danger: {
-      ...baseStyle,
-      backgroundColor: "#ef4444",
-      color: "#fff",
-    },
-    outline: {
-      ...baseStyle,
-      backgroundColor: "transparent",
-      color: "#374151",
-      border: "1px solid #d1d5db",
-    },
+  const sizeClasses = {
+    sm: "text-[10px] px-3 py-1.5",
+    md: "text-xs px-6 py-3",
+    lg: "text-sm px-8 py-4",
   };
+
+  // Randomized rotation if prop is true
+  const rotationClass = rotate ? (Math.random() > 0.5 ? "rotate-2" : "-rotate-2") : "";
 
   return (
     <button
-      style={variants[variant]}
+      className={`${variantClasses[variant] || variantClasses.primary} ${sizeClasses[size]} ${rotationClass} ${className}`}
       disabled={disabled}
       onClick={onClick}
       {...props}
     >
-      {children}
+      <span className="relative z-10 flex items-center justify-center gap-2">
+        {children}
+      </span>
     </button>
   );
 }
+
+

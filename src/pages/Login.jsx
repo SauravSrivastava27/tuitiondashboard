@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
 import { encryptPassword } from "../utils/encryption";
+import Button from "../components/Button";
 
 const API = import.meta.env.VITE_API_URL;
 
@@ -58,23 +59,20 @@ export default function Login() {
   // Success Screen
   if (step === 3) {
     return (
-      <div style={styles.container}>
-        <div style={styles.card}>
-          <div style={styles.successIcon}>✓</div>
-          <h2 style={styles.title}>Login Successful!</h2>
-          <p style={styles.successMessage}>
-            Welcome, <strong>{userName}</strong>
+      <div className="min-h-screen bg-[#f0f0f0] flex items-center justify-center p-8">
+        <div className="nb-card max-w-[420px] w-full text-center">
+          <div className="text-6xl mb-6 filter drop-shadow-[3px_3px_0px_black] animate-bounce">✅</div>
+          <h2 className="text-3xl font-black uppercase tracking-tighter mb-2">Welcome Back!</h2>
+          <p className="font-bold text-nb-black/70 mb-8 italic">
+            Logged in as <strong className="text-nb-black">{userName}</strong>
           </p>
-          <div style={styles.roleDisplay}>
-            <span style={styles.roleLabel}>Your Role:</span>
-            <span style={{
-              ...styles.roleBadge,
-              backgroundColor: userRole === "admin" ? "#4f46e5" : "#16a34a",
-            }}>
-              {userRole === "admin" ? "👨‍💼 Admin" : "👤 Student"}
+          <div className="nb-card bg-nb-yellow/5 border-2 shadow-[4px_4px_0px_black] mb-8 py-4 flex flex-col items-center">
+            <span className="text-[10px] font-black uppercase tracking-widest text-nb-black/50 mb-2">Authenticated As</span>
+            <span className={`px-4 py-1 border-2 border-nb-black font-black uppercase tracking-tighter shadow-[2px_2px_0px_black] ${userRole === "admin" ? "bg-nb-pink text-white" : "bg-nb-green text-black"}`}>
+              {userRole === "admin" ? "👨‍💼 System Admin" : "👤 Student User"}
             </span>
           </div>
-          <p style={styles.redirectMessage}>Redirecting in 2 seconds...</p>
+          <p className="text-xs font-black uppercase tracking-widest animate-pulse text-nb-black/40">Redirecting to Dashboard...</p>
         </div>
       </div>
     );
@@ -83,34 +81,34 @@ export default function Login() {
   // OTP Screen
   if (step === 2) {
     return (
-      <div style={styles.container}>
-        <div style={styles.card}>
-          <h2 style={styles.title}>🔐 Two-Factor Authentication</h2>
-          <p style={styles.info}>
-            Open <strong>Google Authenticator</strong> or <strong>Authy</strong> on your phone and enter the 6-digit code.
+      <div className="min-h-screen bg-[#f0f0f0] flex items-center justify-center p-8">
+        <div className="nb-card max-w-[420px] w-full">
+          <h2 className="text-2xl font-black uppercase tracking-tighter mb-4">🔐 Identity Check</h2>
+          <p className="font-bold text-sm text-nb-black/70 mb-8 border-l-4 border-nb-blue pl-4">
+            Enter the 6-digit verification code from your <strong className="text-nb-blue">Authenticator</strong> app.
           </p>
-          <form onSubmit={handleVerifyOtp} style={styles.form}>
-            <div style={styles.field}>
-              <label style={styles.label}>Authenticator Code</label>
+          <form onSubmit={handleVerifyOtp} className="flex flex-col gap-6">
+            <div className="flex flex-col gap-2">
+              <label className="text-[10px] font-black uppercase tracking-widest text-nb-black/60">Verification Code</label>
               <input
                 type="text"
                 value={otp}
                 onChange={(e) => setOtp(e.target.value)}
                 placeholder="000000"
                 maxLength={6}
-                style={styles.otpInput}
+                className="nb-input text-center text-4xl font-black tracking-[12px] bg-nb-blue/5 border-nb-blue ring-nb-blue/20 ring-4 focus:ring-nb-blue/40"
                 required
                 autoFocus
               />
             </div>
-            {error && <p style={styles.error}>{error}</p>}
-            <button type="submit" style={styles.button}>Verify & Login</button>
+            {error && <p className="nb-card border-2 bg-nb-pink text-white font-bold text-xs p-3 shadow-none uppercase">{error}</p>}
+            <Button type="submit" variant="accent" size="lg" className="w-full uppercase tracking-widest">Verify & Access</Button>
             <button
               type="button"
               onClick={() => { setStep(1); setError(""); setOtp(""); }}
-              style={styles.backButton}
+              className="text-xs font-black uppercase tracking-widest text-nb-black/40 hover:text-nb-pink transition-colors"
             >
-              ← Back to Login
+              ← Back to login
             </button>
           </form>
         </div>
@@ -120,235 +118,61 @@ export default function Login() {
 
   // Login Screen
   return (
-    <div style={styles.container}>
-      <div style={styles.card}>
-        <div style={styles.header}>
-          <h2 style={styles.title}>📚 Tuition Management</h2>
-          <p style={styles.subtitle}>Login to Your Account</p>
+    <div className="min-h-screen bg-nb-yellow flex items-center justify-center p-8 selection:bg-nb-pink selection:text-white">
+      <div className="nb-card max-w-[420px] w-full bg-white shadow-[12px_12px_0px_0px_rgba(0,0,0,1)]">
+        <div className="mb-10 text-center">
+          <h2 className="text-4xl font-black uppercase tracking-tighter m-0 [text-shadow:2px_2px_0_#FFE600]">Login</h2>
+          <p className="text-[10px] font-black uppercase tracking-[0.3em] text-nb-black/40 mt-2 italic">Access your dashboard</p>
         </div>
-        <form onSubmit={handleLogin} style={styles.form}>
-          <div style={styles.field}>
-            <label style={styles.label}>Username</label>
+        <form onSubmit={handleLogin} className="flex flex-col gap-6">
+          <div className="flex flex-col gap-2">
+            <label className="text-[10px] font-black uppercase tracking-widest text-nb-black/60">Username</label>
             <input
               type="text"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
-              placeholder="Enter your username"
-              style={styles.input}
+              placeholder="Your username"
+              className="nb-input bg-nb-yellow/5"
               required
             />
           </div>
-          <div style={styles.field}>
-            <label style={styles.label}>Password</label>
+          <div className="flex flex-col gap-2">
+            <label className="text-[10px] font-black uppercase tracking-widest text-nb-black/60">Password</label>
             <input
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              placeholder="Enter your password"
-              style={styles.input}
+              placeholder="••••••••"
+              className="nb-input bg-nb-pink/5 focus:bg-nb-pink/5"
               required
             />
           </div>
-          {error && <p style={styles.error}>{error}</p>}
-          <button type="submit" style={styles.button}>Login</button>
+          {error && <p className="nb-card border-2 bg-nb-pink text-white font-bold text-xs p-3 shadow-none uppercase">{error}</p>}
+          <Button type="submit" variant="primary" size="lg" className="w-full uppercase tracking-widest !text-lg">Authorize Access</Button>
         </form>
 
-        <div style={styles.divider}>or</div>
+        <div className="relative my-8">
+          <div className="absolute inset-0 flex items-center"><span className="w-full border-t-2 border-nb-black/10"></span></div>
+          <div className="relative flex justify-center text-[10px] uppercase font-black"><span className="bg-white px-4 text-nb-black/30 tracking-widest">Security Gateway</span></div>
+        </div>
 
-        <p style={styles.link}>
-          Don't have an account? <Link to="/register" style={styles.linkText}>Register here</Link>
-        </p>
-
-        <p style={styles.link}>
-          Forgot password? <Link to="/forgot-password" style={styles.linkText}>Reset here</Link>
-        </p>
-
-        <button
-          type="button"
-          onClick={() => navigate("/")}
-          style={styles.backHomeButton}
-        >
-          ← Back to Home
-        </button>
+        <div className="flex flex-col gap-3 text-center">
+          <p className="text-xs font-bold uppercase tracking-widest text-nb-black/60">
+            No account? <Link to="/register" className="text-nb-blue hover:underline">Register</Link>
+          </p>
+          <p className="text-xs font-bold uppercase tracking-widest text-nb-black/60">
+            Lost key? <Link to="/forgot-password" className="text-nb-pink hover:underline">Reset</Link>
+          </p>
+          <button
+            type="button"
+            onClick={() => navigate("/")}
+            className="mt-4 text-[10px] font-black uppercase tracking-[0.2em] text-nb-black/40 hover:text-nb-black hover:tracking-[0.3em] transition-all"
+          >
+            ← Exit System
+          </button>
+        </div>
       </div>
     </div>
   );
 }
 
-const styles = {
-  container: {
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    minHeight: "100vh",
-    backgroundColor: "#f5f6fa",
-    padding: "20px",
-  },
-  card: {
-    background: "#fff",
-    padding: "40px 32px",
-    borderRadius: "12px",
-    boxShadow: "0 4px 16px rgba(0,0,0,0.1)",
-    width: "100%",
-    maxWidth: "420px",
-  },
-  header: {
-    marginBottom: "32px",
-  },
-  title: {
-    textAlign: "center",
-    marginBottom: "8px",
-    color: "#1a1a2e",
-    fontSize: "28px",
-    fontWeight: "700",
-  },
-  subtitle: {
-    textAlign: "center",
-    color: "#666",
-    fontSize: "14px",
-    margin: 0,
-  },
-  info: {
-    textAlign: "center",
-    fontSize: "14px",
-    color: "#555",
-    marginBottom: "24px",
-    lineHeight: "1.6",
-  },
-  form: {
-    display: "flex",
-    flexDirection: "column",
-    gap: "18px",
-  },
-  field: {
-    display: "flex",
-    flexDirection: "column",
-    gap: "6px",
-  },
-  label: {
-    fontSize: "14px",
-    fontWeight: "600",
-    color: "#374151",
-  },
-  input: {
-    padding: "10px 12px",
-    border: "1px solid #d1d5db",
-    borderRadius: "6px",
-    fontSize: "14px",
-    fontFamily: "'Segoe UI', Roboto, sans-serif",
-    transition: "border-color 0.2s",
-  },
-  otpInput: {
-    padding: "16px",
-    border: "2px solid #4f46e5",
-    borderRadius: "8px",
-    fontSize: "28px",
-    textAlign: "center",
-    letterSpacing: "12px",
-    fontWeight: "700",
-    fontFamily: "'Courier New', monospace",
-  },
-  error: {
-    color: "#ef4444",
-    fontSize: "13px",
-    margin: 0,
-    padding: "8px 12px",
-    backgroundColor: "#fee2e2",
-    borderRadius: "6px",
-    border: "1px solid #fecaca",
-  },
-  button: {
-    padding: "12px",
-    backgroundColor: "#4f46e5",
-    color: "#fff",
-    border: "none",
-    borderRadius: "6px",
-    fontSize: "16px",
-    fontWeight: "600",
-    cursor: "pointer",
-    transition: "background-color 0.2s",
-  },
-  backButton: {
-    padding: "10px",
-    backgroundColor: "transparent",
-    color: "#4f46e5",
-    border: "1px solid #4f46e5",
-    borderRadius: "6px",
-    fontSize: "14px",
-    fontWeight: "600",
-    cursor: "pointer",
-    transition: "all 0.2s",
-  },
-  backHomeButton: {
-    width: "100%",
-    padding: "10px",
-    backgroundColor: "transparent",
-    color: "#374151",
-    border: "1px solid #d1d5db",
-    borderRadius: "6px",
-    fontSize: "14px",
-    fontWeight: "600",
-    cursor: "pointer",
-    marginTop: "8px",
-    transition: "all 0.2s",
-  },
-  divider: {
-    textAlign: "center",
-    color: "#aaa",
-    fontSize: "12px",
-    margin: "20px 0",
-    fontWeight: "500",
-  },
-  link: {
-    textAlign: "center",
-    fontSize: "14px",
-    color: "#555",
-    margin: "12px 0 0 0",
-  },
-  linkText: {
-    color: "#4f46e5",
-    textDecoration: "none",
-    fontWeight: "600",
-  },
-  // Success screen styles
-  successIcon: {
-    textAlign: "center",
-    fontSize: "64px",
-    color: "#16a34a",
-    marginBottom: "16px",
-  },
-  successMessage: {
-    textAlign: "center",
-    fontSize: "16px",
-    color: "#374151",
-    marginBottom: "20px",
-  },
-  roleDisplay: {
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    gap: "12px",
-    marginBottom: "20px",
-    padding: "16px",
-    backgroundColor: "#f9fafb",
-    borderRadius: "8px",
-  },
-  roleLabel: {
-    fontSize: "14px",
-    fontWeight: "600",
-    color: "#374151",
-  },
-  roleBadge: {
-    padding: "6px 16px",
-    borderRadius: "20px",
-    color: "#fff",
-    fontWeight: "600",
-    fontSize: "14px",
-  },
-  redirectMessage: {
-    textAlign: "center",
-    fontSize: "13px",
-    color: "#888",
-    margin: 0,
-  },
-};
