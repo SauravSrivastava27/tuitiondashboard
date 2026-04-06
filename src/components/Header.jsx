@@ -15,73 +15,31 @@ export default function Header({ showAdminButton, adminLabel }) {
     navigate("/");
   };
 
-  const headerStyle = {
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "center",
-    padding: "14px 32px",
-    backgroundColor: "#fff",
-    borderBottom: "1px solid #e5e7eb",
-    position: "sticky",
-    top: 0,
-    zIndex: 10,
-  };
-
-  const leftStyle = {
-    display: "flex",
-    alignItems: "center",
-    gap: "12px",
-  };
-
-  const logoStyle = {
-    fontSize: "28px",
-  };
-
-  const textStyle = {
-    display: "flex",
-    flexDirection: "column",
-    gap: "2px",
-  };
-
-  const titleStyle = {
-    fontSize: "16px",
-    fontWeight: "700",
-    color: "#1a1a2e",
-  };
-
-  const subStyle = {
-    fontSize: "11px",
-    color: "#888",
-  };
-
-  const rightStyle = {
-    display: "flex",
-    gap: "10px",
-    alignItems: "center",
-  };
-
   return (
-    <div style={headerStyle}>
-      <div style={{ ...leftStyle, cursor: "pointer" }} onClick={handleHome}>
-        <span style={logoStyle}>📚</span>
-        <div style={textStyle}>
-          <div style={titleStyle}>Tuition System</div>
-          <div style={subStyle}>Welcome, <strong>{getUsername()}</strong></div>
+    <div className="flex justify-between items-center px-8 py-4 bg-nb-yellow border-b-5 border-nb-black sticky top-0 z-50 shadow-[0_4px_0_0_rgba(0,0,0,1)]">
+      <div className="flex items-center gap-4 cursor-pointer group" onClick={handleHome}>
+        <span className="text-4xl filter drop-shadow-[2px_2px_0px_black] group-hover:scale-110 transition-transform">📚</span>
+        <div className="flex flex-col">
+          <div className="text-xl font-black uppercase tracking-tighter text-nb-black leading-none">Tuition System</div>
+          <div className="text-xs font-bold uppercase text-nb-black/60 mt-1">
+            Welcome, <strong className="text-nb-black">{getUsername()}</strong>
+          </div>
         </div>
       </div>
-      <div style={rightStyle}>
-        <Button variant="outline" size="sm" onClick={() => navigate("/profile")}>
+      <div className="flex gap-3 items-center">
+        <Button variant="outline" size="sm" onClick={() => navigate("/profile")} className="bg-white">
           👤 Profile
         </Button>
-{showAdminButton && isAdmin() && (
-          <Button variant="secondary" size="sm" onClick={() => navigate("/admin/dashboard")}>
+        {showAdminButton && isAdmin() && (
+          <Button variant="accent" size="sm" onClick={() => navigate("/admin/dashboard")}>
             {adminLabel || "Admin"}
           </Button>
         )}
-        <Button variant="danger" size="sm" onClick={handleLogout}>
+        <Button variant="secondary" size="sm" onClick={handleLogout}>
           Logout
         </Button>
       </div>
     </div>
   );
 }
+

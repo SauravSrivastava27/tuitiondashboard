@@ -1,113 +1,115 @@
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@700;800;900&display=swap');
+@import "tailwindcss";
+
+@theme {
+
+  --color-nb-yellow: #FFE600;
+  --color-nb-pink: #FF4D6D;
+  --color-nb-blue: #4CC9F0;
+  --color-nb-green: #80ED99;
+  --color-nb-black: #000000;
+  --color-nb-white: #FFFFFF;
+  --color-nb-violet: #7209B7;
+  --color-nb-orange: #F72585;
+
+  --shadow-nb: 4px 4px 0px 0px #000000;
+  --shadow-nb-lg: 8px 8px 0px 0px #000000;
+  
+  --font-sans: 'Space Grotesk', 'Inter', system-ui, 'Segoe UI', Roboto, sans-serif;
+  --font-heading: 'Space Grotesk', 'Inter', system-ui, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: ui-monospace, Consolas, monospace;
+
+  --animate-float: float 3s ease-in-out infinite;
+  --animate-wiggle: wiggle 0.3s ease-in-out infinite;
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+  }
+  @keyframes wiggle {
+    0%, 100% { transform: rotate(-1deg); }
+    50% { transform: rotate(1deg); }
+  }
+}
+
 :root {
-  --text: #6b6375;
-  --text-h: #08060d;
-  --bg: #fff;
-  --border: #e5e4e7;
-  --code-bg: #f4f3ec;
-  --accent: #aa3bff;
-  --accent-bg: rgba(170, 59, 255, 0.1);
-  --accent-border: rgba(170, 59, 255, 0.5);
-  --social-bg: rgba(244, 243, 236, 0.5);
-  --shadow:
-    rgba(0, 0, 0, 0.1) 0 10px 15px -3px, rgba(0, 0, 0, 0.05) 0 4px 6px -2px;
+  --sans: var(--font-sans);
+  --heading: var(--font-heading);
+  --mono: var(--font-mono);
 
-  --sans: system-ui, 'Segoe UI', Roboto, sans-serif;
-  --heading: system-ui, 'Segoe UI', Roboto, sans-serif;
-  --mono: ui-monospace, Consolas, monospace;
-
-  font: 18px/145% var(--sans);
-  letter-spacing: 0.18px;
-  color-scheme: light dark;
-  color: var(--text);
-  background: var(--bg);
+  font-family: var(--sans);
+  letter-spacing: -0.01em; /* Tighter tracking for brutalist look */
+  color: var(--color-nb-black);
+  background: var(--color-nb-white);
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-
-  @media (max-width: 1024px) {
-    font-size: 16px;
-  }
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --text: #9ca3af;
-    --text-h: #f3f4f6;
-    --bg: #16171d;
-    --border: #2e303a;
-    --code-bg: #1f2028;
-    --accent: #c084fc;
-    --accent-bg: rgba(192, 132, 252, 0.15);
-    --accent-border: rgba(192, 132, 252, 0.5);
-    --social-bg: rgba(47, 48, 58, 0.5);
-    --shadow:
-      rgba(0, 0, 0, 0.4) 0 10px 15px -3px, rgba(0, 0, 0, 0.25) 0 4px 6px -2px;
-  }
+@utility nb-pattern {
+  background-color: #f0f0f0;
+  background-image: radial-gradient(#000000 0.5px, transparent 0.5px);
+  background-size: 20px 20px;
+}
 
-  #social .button-icon {
-    filter: invert(1) brightness(2);
-  }
+@utility nb-card {
+  @apply bg-white border-black border-3 shadow-[4px_4px_0px_black] rounded-none p-6 transition-all duration-150;
+}
+
+@utility nb-card-header {
+  @apply bg-black text-white px-4 py-1 -mt-6 -mx-6 mb-6 font-black uppercase text-[10px] tracking-widest flex items-center justify-between;
+}
+
+@utility nb-button {
+  @apply font-black uppercase tracking-widest border-3 border-black shadow-[4px_4px_0px_black] rounded-none px-4 py-2 transition-all duration-200 relative cursor-pointer active:shadow-none active:translate-x-[4px] active:translate-y-[4px] disabled:opacity-60 disabled:cursor-not-allowed hover:-translate-x-1 hover:-translate-y-1 hover:shadow-[8px_8px_0px_black];
+}
+
+@utility nb-button-primary {
+  @apply nb-button bg-nb-yellow hover:bg-yellow-400;
+}
+
+@utility nb-button-secondary {
+  @apply nb-button bg-nb-pink hover:bg-pink-400;
+}
+
+@utility nb-button-accent {
+  @apply nb-button bg-nb-blue hover:bg-blue-400;
+}
+
+@utility nb-input {
+  @apply w-full bg-white border-3 border-black rounded-none px-3 py-2 font-bold focus:bg-yellow-50 focus:outline-none transition-all duration-150;
+}
+
+@utility nb-table {
+  @apply w-full border-collapse border-3 border-black;
+}
+
+@utility nb-modal {
+  @apply bg-white border-5 border-black shadow-[8px_8px_0px_black] rounded-none p-8 relative;
+}
+
+@utility nb-badge {
+  @apply px-2 py-1 border-2 border-black font-black rounded-none text-[10px] uppercase tracking-widest shadow-[2px_2px_0px_black];
+}
+
+@utility nb-sticker {
+  @apply rounded-full border-3 border-black shadow-[4px_4px_0px_black] inline-flex items-center justify-center p-3 font-black text-center rotate-[-5deg] hover:rotate-[5deg] transition-transform duration-200;
 }
 
 body {
   margin: 0;
+  @apply nb-pattern;
 }
 
-select {
-  color: #1a1a2e;
-}
-
-select option {
-  color: #1a1a2e;
-  background-color: #fff;
-}
-
-#root {
-  width: 100%;
-  min-height: 100svh;
-}
-
-h1,
-h2 {
+h1, h2, h3, h4, h5, h6 {
+  @apply font-black uppercase tracking-tighter text-black;
   font-family: var(--heading);
-  font-weight: 500;
-  color: var(--text-h);
 }
 
-h1 {
-  font-size: 56px;
-  letter-spacing: -1.68px;
-  margin: 32px 0;
-  @media (max-width: 1024px) {
-    font-size: 36px;
-    margin: 20px 0;
-  }
-}
-h2 {
-  font-size: 24px;
-  line-height: 118%;
-  letter-spacing: -0.24px;
-  margin: 0 0 8px;
-  @media (max-width: 1024px) {
-    font-size: 20px;
-  }
-}
-p {
-  margin: 0;
-}
+h1 { @apply text-6xl mb-8 leading-[0.9]; }
+h2 { @apply text-4xl mb-6 leading-none; }
+h3 { @apply text-2xl mb-4; }
 
-code,
-.counter {
-  font-family: var(--mono);
-  display: inline-flex;
-  border-radius: 4px;
-  color: var(--text-h);
-}
 
-code {
-  font-size: 15px;
-  line-height: 135%;
-  padding: 4px 8px;
-  background: var(--code-bg);
-}
+

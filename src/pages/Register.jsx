@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { encryptPassword } from "../utils/encryption";
+import Button from "../components/Button";
 
 const API = import.meta.env.VITE_API_URL;
 
@@ -66,7 +67,6 @@ export default function Register() {
       setForm({ username: "", password: "", phone: "", adminCode: "" });
       setRegisteredRole(res.data.role || registrationData.userRole);
       // Show success state
-      setTimeout(() => navigate("/login"), 3000);
     } catch (err) {
       setError(err.response?.data?.message || "Verification failed");
     } finally {
@@ -77,38 +77,29 @@ export default function Register() {
   // Success screen after registration
   if (registeredRole && !qrCode) {
     return (
-      <div style={styles.container}>
-        <div style={styles.card}>
-          <div style={styles.successIcon}>✓</div>
-          <h2 style={styles.title}>Registration Successful!</h2>
-
-          <div style={styles.roleInfoBox}>
-            <span style={styles.roleInfoLabel}>Account Type:</span>
-            <span style={{
-              ...styles.roleBadge,
-              backgroundColor: registeredRole === "admin" ? "#4f46e5" : "#10b981"
-            }}>
-              {registeredRole === "admin" ? "👨‍💼 Admin" : "👤 Student"}
+      <div className="min-h-screen bg-[#f0f0f0] flex items-center justify-center p-8">
+        <div className="nb-card max-w-[420px] w-full text-center">
+          <div className="text-6xl mb-6 filter drop-shadow-[3px_3px_0px_black] animate-bounce">✨</div>
+          <h2 className="text-3xl font-black uppercase tracking-tighter mb-2">Registration Success!</h2>
+          
+          <div className="nb-card bg-nb-blue/5 border-2 shadow-[4px_4px_0px_black] my-8 py-4 flex flex-col items-center">
+            <span className="text-[10px] font-black uppercase tracking-widest text-nb-black/50 mb-2">Account Type Assigned</span>
+            <span className={`px-4 py-1 border-2 border-nb-black font-black uppercase tracking-tighter shadow-[2px_2px_0px_black] ${registeredRole === "admin" ? "bg-nb-pink text-white" : "bg-nb-green text-black"}`}>
+              {registeredRole === "admin" ? "👨‍💼 System Admin" : "👤 Student User"}
             </span>
           </div>
 
-          <p style={styles.info}>
-            Your account has been created successfully with 2FA enabled!
+          <p className="font-bold text-nb-black/70 mb-8 italic">
+            Your account has been created successfully with <strong className="text-nb-blue">2FA Security</strong> enabled!
           </p>
 
-          <div style={styles.featuresList}>
-            <h3 style={styles.featuresTitle}>What's Next:</h3>
-            <ul style={styles.featuresList}>
-              <li>✓ Login with your credentials</li>
-              <li>✓ Use your authenticator app code on login</li>
-              <li>✓ Access your dashboard</li>
-            </ul>
-          </div>
-
-          <button style={styles.button} onClick={() => navigate("/login")}>
+          <Button variant="primary" size="lg" className="w-full uppercase tracking-widest mb-4" onClick={() => navigate("/login")}>
             → Proceed to Login
-          </button>
-          <button style={styles.backHomeButton} onClick={() => navigate("/")}>
+          </Button>
+          <button 
+            onClick={() => navigate("/")}
+            className="text-xs font-black uppercase tracking-widest text-nb-black/40 hover:text-nb-black transition-all"
+          >
             ← Back to Home
           </button>
         </div>
@@ -119,49 +110,51 @@ export default function Register() {
   // 2FA verification screen
   if (qrCode && tempSecret) {
     return (
-      <div style={styles.container}>
-        <div style={styles.card}>
-          <h2 style={styles.title}>🔐 Enable Two-Factor Authentication</h2>
-          <p style={styles.subtitle}>Complete your registration by setting up 2FA</p>
+      <div className="min-h-screen bg-[#f0f0f0] flex items-center justify-center p-8">
+        <div className="nb-card max-w-[450px] w-full">
+          <h2 className="text-2xl font-black uppercase tracking-tighter mb-2">🔐 Setup 2FA</h2>
+          <p className="text-xs font-bold uppercase tracking-widest text-nb-black/40 mb-8 italic">Mandatory Security Step</p>
 
-          <div style={styles.twoFASection}>
-            <div style={styles.qrWrapper}>
-              <img src={qrCode} alt="2FA QR Code" style={styles.qrImage} />
+          <div className="flex flex-col items-center">
+            <div className="nb-card p-4 bg-white border-3 shadow-[8px_8px_0px_black] mb-6">
+              <img src={qrCode} alt="2FA QR Code" className="w-[180px] h-[180px]" />
             </div>
 
-            <p style={styles.qrHelp}>
-              Scan this QR code with Google Authenticator or Authy
+            <p className="text-sm font-bold text-center text-nb-black/70 mb-8 border-y-2 border-nb-black/5 py-4 w-full uppercase tracking-tight">
+              Scan with <strong className="text-nb-blue">Google Authenticator</strong> or <strong className="text-nb-pink">Authy</strong>
             </p>
 
-            <div style={styles.field}>
-              <label style={styles.label}>Enter 6-digit code</label>
+            <div className="w-full flex flex-col gap-2 mb-8">
+              <label className="text-[10px] font-black uppercase tracking-widest text-nb-black/60">Verification Code</label>
               <input
                 type="text"
                 value={otp}
                 onChange={(e) => setOtp(e.target.value.slice(0, 6))}
                 placeholder="000000"
                 maxLength={6}
-                style={styles.otpInput}
+                className="nb-input text-center text-3xl font-black tracking-[8px] bg-nb-blue/5 border-nb-blue"
                 required
               />
             </div>
 
-            {error && <p style={styles.error}>{error}</p>}
+            {error && <p className="nb-card border-2 bg-nb-pink text-white font-bold text-xs p-3 shadow-none uppercase mb-6 w-full">{error}</p>}
 
-            <button
+            <Button
               onClick={handleVerify2FA}
               disabled={otp.length !== 6 || loading}
-              style={styles.button}
+              variant="primary"
+              size="lg"
+              className="w-full uppercase tracking-widest"
             >
-              {loading ? "Verifying..." : "Verify & Complete Registration"}
-            </button>
+              {loading ? "Activating..." : "Complete Registration"}
+            </Button>
 
             <button
               type="button"
               onClick={() => navigate("/")}
-              style={styles.backHomeButton}
+              className="mt-6 text-[10px] font-black uppercase tracking-widest text-nb-black/40 hover:text-nb-black transition-all"
             >
-              ← Back to Home
+              ← Cancel & Exit
             </button>
           </div>
         </div>
@@ -171,314 +164,104 @@ export default function Register() {
 
   // Initial registration form
   return (
-    <div style={styles.container}>
-      <div style={styles.card}>
-        <div style={styles.header}>
-          <h2 style={styles.title}>📚 Create Account</h2>
-          <p style={styles.subtitle}>Register for Tuition Management</p>
+    <div className="min-h-screen bg-nb-blue flex items-center justify-center p-8 selection:bg-nb-yellow selection:text-nb-black">
+      <div className="nb-card max-w-[440px] w-full bg-white shadow-[12px_12px_0px_0px_rgba(0,0,0,1)]">
+        <div className="mb-10 text-center">
+          <h2 className="text-4xl font-black uppercase tracking-tighter m-0 [text-shadow:2px_2px_0_#A3E635]">Join Us</h2>
+          <p className="text-[10px] font-black uppercase tracking-[0.3em] text-nb-black/40 mt-2 italic">Tuition Management System</p>
         </div>
-        <form onSubmit={handleRegister} style={styles.form}>
-          <div style={styles.field}>
-            <label style={styles.label}>Username</label>
+        
+        <form onSubmit={handleRegister} className="flex flex-col gap-6">
+          <div className="flex flex-col gap-2">
+            <label className="text-[10px] font-black uppercase tracking-widest text-nb-black/60">Choose Username</label>
             <input
               name="username"
               type="text"
               value={form.username}
               onChange={handleChange}
-              placeholder="Choose a username"
-              style={styles.input}
+              placeholder="Username"
+              className="nb-input bg-nb-blue/5"
               required
             />
           </div>
-          <div style={styles.field}>
-            <label style={styles.label}>Password</label>
+          <div className="flex flex-col gap-2">
+            <label className="text-[10px] font-black uppercase tracking-widest text-nb-black/60">Secure Password</label>
             <input
               name="password"
               type="password"
               value={form.password}
               onChange={handleChange}
-              placeholder="Enter a strong password"
-              style={styles.input}
+              placeholder="••••••••"
+              className="nb-input bg-nb-pink/5"
               required
             />
           </div>
-          <div style={styles.field}>
-            <label style={styles.label}>Phone Number</label>
+          <div className="flex flex-col gap-2">
+            <label className="text-[10px] font-black uppercase tracking-widest text-nb-black/60">Phone Contact</label>
             <input
               name="phone"
               type="tel"
               value={form.phone}
               onChange={handleChange}
-              placeholder="10-digit mobile number"
+              placeholder="10-digit number"
               maxLength={10}
-              style={styles.input}
+              className="nb-input bg-nb-green/5"
               required
             />
           </div>
 
           {/* Admin Code Section */}
-          <div style={styles.adminSection}>
-            <label style={styles.checkboxLabel}>
+          <div className="nb-card bg-nb-black p-4 shadow-none">
+            <label className="flex items-center gap-3 text-xs font-black uppercase tracking-widest text-white cursor-pointer">
               <input
                 type="checkbox"
                 checked={showAdminCode}
                 onChange={(e) => setShowAdminCode(e.target.checked)}
-                style={styles.checkbox}
+                className="w-4 h-4 border-2 border-white bg-transparent appearance-none checked:bg-nb-yellow transition-all cursor-pointer"
               />
-              <span>Register as Admin</span>
+              <span>I am an Administrator</span>
             </label>
             {showAdminCode && (
-              <div style={styles.field}>
-                <label style={styles.label}>Admin Registration Code</label>
+              <div className="mt-4 flex flex-col gap-2 animate-in slide-in-from-top-2 duration-300">
+                <label className="text-[9px] font-black uppercase tracking-widest text-white/60">Verification Code</label>
                 <input
                   name="adminCode"
                   type="password"
                   value={form.adminCode}
                   onChange={handleChange}
-                  placeholder="Enter admin code"
-                  style={styles.input}
+                  placeholder="Enter Key"
+                  className="nb-input !bg-white/10 !border-white/20 !text-white !shadow-none focus:!border-nb-yellow"
                 />
-                <p style={styles.hint}>
-                  Enter the admin registration code provided by your system administrator.
-                </p>
               </div>
             )}
           </div>
 
-          {error && <p style={styles.error}>{error}</p>}
-          <button type="submit" style={styles.button} disabled={loading}>
-            {loading ? "Creating Account..." : "Create Account"}
-          </button>
+          {error && <p className="nb-card border-2 bg-nb-pink text-white font-bold text-xs p-3 shadow-none uppercase">{error}</p>}
+          
+          <Button type="submit" variant="accent" size="lg" className="w-full uppercase tracking-[0.2em] !text-lg !bg-nb-green font-black" disabled={loading}>
+            {loading ? "Processing..." : "Create Identity"}
+          </Button>
         </form>
 
-        <div style={styles.divider}>or</div>
+        <div className="relative my-8">
+          <div className="absolute inset-0 flex items-center"><span className="w-full border-t-2 border-nb-black/10"></span></div>
+          <div className="relative flex justify-center text-[10px] uppercase font-black"><span className="bg-white px-4 text-nb-black/30 tracking-widest">Registration Portal</span></div>
+        </div>
 
-        <p style={styles.link}>
-          Already have an account? <Link to="/login" style={styles.linkText}>Login here</Link>
-        </p>
-
-        <button
-          type="button"
-          onClick={() => navigate("/")}
-          style={styles.backHomeButton}
-        >
-          ← Back to Home
-        </button>
+        <div className="flex flex-col gap-4 text-center">
+          <p className="text-xs font-bold uppercase tracking-widest text-nb-black/60">
+            Have an account? <Link to="/login" className="text-nb-blue hover:underline">Login</Link>
+          </p>
+          <button
+            type="button"
+            onClick={() => navigate("/")}
+            className="text-[10px] font-black uppercase tracking-[0.2em] text-nb-black/40 hover:text-nb-black transition-all"
+          >
+            ← Return to Hub
+          </button>
+        </div>
       </div>
     </div>
   );
 }
 
-const styles = {
-  container: {
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    minHeight: "100vh",
-    backgroundColor: "#f5f6fa",
-    padding: "20px",
-  },
-  card: {
-    background: "#fff",
-    padding: "40px 32px",
-    borderRadius: "12px",
-    boxShadow: "0 4px 16px rgba(0,0,0,0.1)",
-    width: "100%",
-    maxWidth: "420px",
-  },
-  header: {
-    marginBottom: "32px",
-  },
-  title: {
-    textAlign: "center",
-    marginBottom: "8px",
-    color: "#1a1a2e",
-    fontSize: "28px",
-    fontWeight: "700",
-  },
-  subtitle: {
-    textAlign: "center",
-    color: "#666",
-    fontSize: "14px",
-    margin: 0,
-  },
-  info: {
-    textAlign: "center",
-    fontSize: "14px",
-    color: "#555",
-    marginBottom: "24px",
-    lineHeight: "1.6",
-  },
-  qrWrapper: {
-    display: "flex",
-    justifyContent: "center",
-    marginBottom: "24px",
-  },
-  qr: {
-    width: "200px",
-    height: "200px",
-    border: "2px solid #e5e7eb",
-    borderRadius: "8px",
-  },
-  secretBox: {
-    backgroundColor: "#f9fafb",
-    border: "1px solid #e5e7eb",
-    borderRadius: "8px",
-    padding: "12px",
-    marginBottom: "20px",
-    display: "flex",
-    flexDirection: "column",
-    gap: "6px",
-  },
-  secretLabel: {
-    fontSize: "12px",
-    color: "#666",
-    fontWeight: "500",
-  },
-  secretCode: {
-    fontSize: "13px",
-    wordBreak: "break-all",
-    color: "#1a1a2e",
-    fontFamily: "monospace",
-    backgroundColor: "#fff",
-    padding: "8px",
-    borderRadius: "4px",
-    border: "1px solid #e5e7eb",
-  },
-  note: {
-    fontSize: "13px",
-    color: "#666",
-    textAlign: "center",
-    marginBottom: "20px",
-    lineHeight: "1.5",
-  },
-  form: {
-    display: "flex",
-    flexDirection: "column",
-    gap: "18px",
-  },
-  field: {
-    display: "flex",
-    flexDirection: "column",
-    gap: "6px",
-  },
-  label: {
-    fontSize: "14px",
-    fontWeight: "600",
-    color: "#374151",
-  },
-  input: {
-    padding: "10px 12px",
-    border: "1px solid #d1d5db",
-    borderRadius: "6px",
-    fontSize: "14px",
-    fontFamily: "'Segoe UI', Roboto, sans-serif",
-    transition: "border-color 0.2s",
-  },
-  error: {
-    color: "#ef4444",
-    fontSize: "13px",
-    margin: 0,
-    padding: "8px 12px",
-    backgroundColor: "#fee2e2",
-    borderRadius: "6px",
-    border: "1px solid #fecaca",
-  },
-  button: {
-    padding: "12px",
-    backgroundColor: "#4f46e5",
-    color: "#fff",
-    border: "none",
-    borderRadius: "6px",
-    fontSize: "16px",
-    fontWeight: "600",
-    cursor: "pointer",
-    transition: "background-color 0.2s",
-  },
-  backHomeButton: {
-    width: "100%",
-    padding: "10px",
-    backgroundColor: "transparent",
-    color: "#374151",
-    border: "1px solid #d1d5db",
-    borderRadius: "6px",
-    fontSize: "14px",
-    fontWeight: "600",
-    cursor: "pointer",
-    marginTop: "8px",
-    transition: "all 0.2s",
-  },
-  divider: {
-    textAlign: "center",
-    color: "#aaa",
-    fontSize: "12px",
-    margin: "20px 0",
-    fontWeight: "500",
-  },
-  link: {
-    textAlign: "center",
-    fontSize: "14px",
-    color: "#555",
-    margin: "12px 0 0 0",
-  },
-  linkText: {
-    color: "#4f46e5",
-    textDecoration: "none",
-    fontWeight: "600",
-  },
-  successIcon: {
-    textAlign: "center",
-    fontSize: "64px",
-    color: "#16a34a",
-    marginBottom: "16px",
-  },
-  roleInfoBox: {
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    gap: "12px",
-    padding: "12px",
-    backgroundColor: "#f9fafb",
-    borderRadius: "6px",
-    marginBottom: "16px",
-  },
-  roleInfoLabel: {
-    fontSize: "13px",
-    fontWeight: "600",
-    color: "#374151",
-  },
-  roleBadge: {
-    padding: "4px 12px",
-    borderRadius: "12px",
-    color: "#fff",
-    fontWeight: "600",
-    fontSize: "12px",
-  },
-  adminSection: {
-    padding: "12px",
-    backgroundColor: "#f0f2f5",
-    borderRadius: "6px",
-    marginBottom: "16px",
-    border: "1px solid #ddd",
-  },
-  checkboxLabel: {
-    display: "flex",
-    alignItems: "center",
-    gap: "8px",
-    fontSize: "14px",
-    fontWeight: "600",
-    color: "#374151",
-    cursor: "pointer",
-  },
-  checkbox: {
-    cursor: "pointer",
-    width: "16px",
-    height: "16px",
-  },
-  hint: {
-    fontSize: "12px",
-    color: "#666",
-    marginTop: "8px",
-    marginBottom: 0,
-  },
-};
