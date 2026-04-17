@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import AdminLayout from "../layouts/AdminLayout";
-import api from "../api";
 import Card from "../components/Card";
 import LoadingSpinner from "../components/LoadingSpinner";
 import { analyticsService } from "../services/apiService";
+import "../styles/pages/AdminReports.scss";
 
 export default function AdminReports() {
   const [feeSummary, setFeeSummary] = useState(null);
@@ -25,192 +25,123 @@ export default function AdminReports() {
         setLoading(false);
       }
     };
-
     loadReports();
   }, []);
 
   if (loading) return <AdminLayout><LoadingSpinner /></AdminLayout>;
 
-  const tableStyle = {
-    width: "100%",
-    borderCollapse: "collapse",
-  };
-
-  const thStyle = {
-    padding: "12px 16px",
-    textAlign: "left",
-    fontSize: "12px",
-    fontWeight: "600",
-    color: "#6b7280",
-    backgroundColor: "#f9fafb",
-    borderBottom: "1px solid #e5e7eb",
-  };
-
-  const tdStyle = {
-    padding: "12px 16px",
-    fontSize: "14px",
-    color: "#374151",
-    borderBottom: "1px solid #f3f4f6",
-  };
-
   return (
     <AdminLayout>
       <div>
-        <h1 style={{ fontSize: "24px", fontWeight: "700", color: "#1a1a2e", margin: "0 0 6px" }}>
-          Reports & Analytics
-        </h1>
-        <p style={{ fontSize: "14px", color: "#666", margin: 0, marginBottom: "24px" }}>
-          Detailed reports and analytics of your tuition business
-        </p>
+        <h1 className="admin-reports__title">Reports & Analytics</h1>
+        <p className="admin-reports__subtitle">Detailed reports and analytics of your tuition business</p>
 
-        {/* Fee Summary */}
         <Card title="💰 Fee Collection Summary" icon="📊">
           {feeSummary?.summary && (
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: "16px", marginBottom: "20px" }}>
+            <div className="admin-reports__summary-grid">
               {feeSummary.summary.map((item) => (
-                <div key={item._id} style={{ padding: "12px", backgroundColor: "#f9fafb", borderRadius: "6px" }}>
-                  <div style={{ fontSize: "12px", color: "#888", marginBottom: "4px", textTransform: "capitalize" }}>
-                    {item._id} Fees
-                  </div>
-                  <div style={{ fontSize: "18px", fontWeight: "700", color: "#1a1a2e", marginBottom: "4px" }}>
-                    {item.count} payments
-                  </div>
-                  <div style={{ fontSize: "14px", color: "#4f46e5", fontWeight: "600" }}>
-                    ₹{item.total.toLocaleString()}
-                  </div>
+                <div key={item._id} className="admin-reports__summary-item">
+                  <div className="admin-reports__summary-label">{item._id} Fees</div>
+                  <div className="admin-reports__summary-count">{item.count} payments</div>
+                  <div className="admin-reports__summary-amount">₹{item.total.toLocaleString()}</div>
                 </div>
               ))}
             </div>
           )}
-          <div style={{ marginTop: "16px", paddingTop: "16px", borderTop: "1px solid #e5e7eb" }}>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-              <span style={{ fontWeight: "600", color: "#374151" }}>Total Collected</span>
-              <span style={{ fontSize: "20px", fontWeight: "700", color: "#16a34a" }}>
-                ₹{feeSummary?.totalCollected?.toLocaleString() || 0}
-              </span>
-            </div>
+          <div className="admin-reports__total-row">
+            <span className="admin-reports__total-label">Total Collected</span>
+            <span className="admin-reports__total-value">₹{feeSummary?.totalCollected?.toLocaleString() || 0}</span>
           </div>
         </Card>
 
-        {/* Monthly Breakdown */}
         <Card title="📈 Monthly Fee Collection">
           {feeSummary?.byMonth && feeSummary.byMonth.length > 0 ? (
-            <div style={{ overflowX: "auto" }}>
-              <table style={tableStyle}>
+            <div className="admin-reports__table-wrapper">
+              <table className="admin-reports__table">
                 <thead>
                   <tr>
-                    <th style={thStyle}>Month/Year</th>
-                    <th style={thStyle}>Payments</th>
-                    <th style={thStyle}>Total Amount</th>
+                    <th className="admin-reports__th">Month/Year</th>
+                    <th className="admin-reports__th">Payments</th>
+                    <th className="admin-reports__th">Total Amount</th>
                   </tr>
                 </thead>
                 <tbody>
                   {feeSummary.byMonth.map((item) => (
                     <tr key={`${item._id.year}-${item._id.month}`}>
-                      <td style={tdStyle}>
-                        {new Date(item._id.year, item._id.month - 1).toLocaleDateString("en-IN", {
-                          month: "long",
-                          year: "numeric",
-                        })}
+                      <td className="admin-reports__td">
+                        {new Date(item._id.year, item._id.month - 1).toLocaleDateString("en-IN", { month: "long", year: "numeric" })}
                       </td>
-                      <td style={tdStyle}>{item.count}</td>
-                      <td style={tdStyle}>₹{item.total.toLocaleString()}</td>
+                      <td className="admin-reports__td">{item.count}</td>
+                      <td className="admin-reports__td">₹{item.total.toLocaleString()}</td>
                     </tr>
                   ))}
                 </tbody>
               </table>
             </div>
           ) : (
-            <div style={{ padding: "20px", textAlign: "center", color: "#aaa" }}>
-              No monthly data available
-            </div>
+            <div className="admin-reports__empty">No monthly data available</div>
           )}
         </Card>
 
-        {/* Recent Activities */}
         {recentActivity && (
           <>
             <Card title="📚 Recent Students">
-              {recentActivity.recentStudents && recentActivity.recentStudents.length > 0 ? (
-                <table style={tableStyle}>
+              {recentActivity.recentStudents?.length > 0 ? (
+                <table className="admin-reports__table">
                   <thead>
                     <tr>
-                      <th style={thStyle}>Name</th>
-                      <th style={thStyle}>Status</th>
-                      <th style={thStyle}>Join Date</th>
+                      <th className="admin-reports__th">Name</th>
+                      <th className="admin-reports__th">Status</th>
+                      <th className="admin-reports__th">Join Date</th>
                     </tr>
                   </thead>
                   <tbody>
                     {recentActivity.recentStudents.map((student) => (
                       <tr key={student._id}>
-                        <td style={tdStyle}>{student.name}</td>
-                        <td style={tdStyle}>
-                          <span style={{
-                            display: "inline-block",
-                            padding: "3px 10px",
-                            borderRadius: "100px",
-                            fontSize: "12px",
-                            fontWeight: "600",
-                            backgroundColor: student.status === "active" ? "#d1fae5" : "#fee2e2",
-                            color: student.status === "active" ? "#065f46" : "#991b1b"
-                          }}>
+                        <td className="admin-reports__td">{student.name}</td>
+                        <td className="admin-reports__td">
+                          <span className={`admin-reports__status-badge admin-reports__status-badge--${student.status}`}>
                             {student.status}
                           </span>
                         </td>
-                        <td style={tdStyle}>
-                          {new Date(student.createdAt).toLocaleDateString()}
-                        </td>
+                        <td className="admin-reports__td">{new Date(student.createdAt).toLocaleDateString()}</td>
                       </tr>
                     ))}
                   </tbody>
                 </table>
               ) : (
-                <div style={{ padding: "20px", textAlign: "center", color: "#aaa" }}>
-                  No recent students
-                </div>
+                <div className="admin-reports__empty">No recent students</div>
               )}
             </Card>
 
             <Card title="💳 Recent Fees">
-              {recentActivity.recentFees && recentActivity.recentFees.length > 0 ? (
-                <table style={tableStyle}>
+              {recentActivity.recentFees?.length > 0 ? (
+                <table className="admin-reports__table">
                   <thead>
                     <tr>
-                      <th style={thStyle}>Student</th>
-                      <th style={thStyle}>Amount</th>
-                      <th style={thStyle}>Status</th>
-                      <th style={thStyle}>Date</th>
+                      <th className="admin-reports__th">Student</th>
+                      <th className="admin-reports__th">Amount</th>
+                      <th className="admin-reports__th">Status</th>
+                      <th className="admin-reports__th">Date</th>
                     </tr>
                   </thead>
                   <tbody>
                     {recentActivity.recentFees.map((fee) => (
                       <tr key={fee._id}>
-                        <td style={tdStyle}>{fee.studentId?.name || "Unknown"}</td>
-                        <td style={tdStyle}>₹{fee.amount}</td>
-                        <td style={tdStyle}>
-                          <span style={{
-                            display: "inline-block",
-                            padding: "3px 10px",
-                            borderRadius: "100px",
-                            fontSize: "12px",
-                            fontWeight: "600",
-                            backgroundColor: fee.status === "paid" ? "#d1fae5" : "#fef3c7",
-                            color: fee.status === "paid" ? "#065f46" : "#92400e"
-                          }}>
+                        <td className="admin-reports__td">{fee.studentId?.name || "Unknown"}</td>
+                        <td className="admin-reports__td">₹{fee.amount}</td>
+                        <td className="admin-reports__td">
+                          <span className={`admin-reports__status-badge admin-reports__status-badge--${fee.status}`}>
                             {fee.status}
                           </span>
                         </td>
-                        <td style={tdStyle}>
-                          {new Date(fee.createdAt).toLocaleDateString()}
-                        </td>
+                        <td className="admin-reports__td">{new Date(fee.createdAt).toLocaleDateString()}</td>
                       </tr>
                     ))}
                   </tbody>
                 </table>
               ) : (
-                <div style={{ padding: "20px", textAlign: "center", color: "#aaa" }}>
-                  No recent fees
-                </div>
+                <div className="admin-reports__empty">No recent fees</div>
               )}
             </Card>
           </>

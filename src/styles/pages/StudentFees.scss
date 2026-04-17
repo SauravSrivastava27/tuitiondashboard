@@ -1,0 +1,122 @@
+.student-fees {
+  &__title {
+    font-size: 24px;
+    font-weight: 700;
+    color: #1a1a2e;
+    margin: 0 0 6px;
+  }
+
+  &__subtitle {
+    font-size: 14px;
+    color: #666;
+    margin: 0 0 24px;
+  }
+
+  &__summary-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+
+  &__summary-card {
+    background-color: #fff;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 1px 6px rgba(0, 0, 0, 0.07);
+    text-align: center;
+  }
+
+  &__summary-icon {
+    font-size: 28px;
+    margin-bottom: 8px;
+  }
+
+  &__summary-label {
+    font-size: 12px;
+    color: #888;
+    margin-top: 4px;
+    font-weight: 500;
+  }
+
+  &__progress-card {
+    background-color: #fff;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 1px 6px rgba(0, 0, 0, 0.07);
+    margin-bottom: 24px;
+  }
+
+  &__progress-header {
+    display: flex;
+    justify-content: space-between;
+    font-size: 13px;
+    color: #6b7280;
+    margin-bottom: 8px;
+  }
+
+  &__progress-pct {
+    font-weight: 600;
+    color: #1a1a2e;
+  }
+
+  &__progress-track {
+    height: 10px;
+    background-color: #e5e7eb;
+    border-radius: 99px;
+    overflow: hidden;
+  }
+
+  &__progress-fill {
+    height: 100%;
+    border-radius: 99px;
+    transition: width 0.5s ease;
+  }
+
+  &__progress-footer {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    color: #9ca3af;
+    margin-top: 6px;
+  }
+
+  &__table-overflow { overflow-x: auto; }
+
+  &__table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  &__th {
+    padding: 12px 16px;
+    text-align: left;
+    font-size: 12px;
+    font-weight: 600;
+    color: #6b7280;
+    background-color: #f9fafb;
+    border-bottom: 1px solid #e5e7eb;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  &__td {
+    padding: 14px 16px;
+    font-size: 14px;
+    color: #374151;
+    border-bottom: 1px solid #f3f4f6;
+  }
+
+  &__td--bold { font-weight: 600; }
+  &__td--paid { font-weight: 600; color: #16a34a; }
+  &__td--unpaid { color: #9ca3af; }
+  &__td--remaining-paid { font-weight: 700; color: #16a34a; }
+  &__td--remaining-due { font-weight: 700; color: #ef4444; }
+  &__td--notes { color: #9ca3af; font-size: 13px; }
+
+  &__empty {
+    padding: 40px;
+    text-align: center;
+    color: #aaa;
+  }
+}

@@ -1,11 +1,12 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import StudentLayout from "../layouts/StudentLayout";
-import api from "../api";
 import Card from "../components/Card";
 import Input from "../components/Input";
 import Button from "../components/Button";
+import Badge from "../components/Badge";
 import LoadingSpinner from "../components/LoadingSpinner";
 import { getUsername } from "../utils/auth";
+import "../styles/pages/StudentProfile.scss";
 
 export default function StudentProfile() {
   const [profile, setProfile] = useState(null);
@@ -15,8 +16,6 @@ export default function StudentProfile() {
   const [formData, setFormData] = useState({});
 
   useEffect(() => {
-    // In a real app, we'd fetch user profile from /api/users/:id
-    // For now, we'll just show the localStorage data
     const username = getUsername();
     setProfile({ username });
     setFormData({ username });
@@ -31,12 +30,11 @@ export default function StudentProfile() {
   const handleSave = async () => {
     try {
       setMessage("");
-      // In a real app, would call api.put("/api/users/:id/profile", formData)
       setMessage("Profile updated successfully");
       setProfile(formData);
       setIsEditing(false);
       setTimeout(() => setMessage(""), 3000);
-    } catch (err) {
+    } catch {
       setMessage("Error updating profile");
     }
   };
@@ -47,49 +45,30 @@ export default function StudentProfile() {
   return (
     <StudentLayout>
       <div>
-        <h1 style={{ fontSize: "28px", fontWeight: "700", color: "#1a1a2e", margin: "0 0 6px" }}>
-          My Profile
-        </h1>
-        <p style={{ fontSize: "14px", color: "#666", margin: "0 0 24px" }}>
-          Manage your account settings
-        </p>
+        <h1 className="student-profile__title">My Profile</h1>
+        <p className="student-profile__subtitle">Manage your account settings</p>
 
         {message && (
-          <div style={{
-            backgroundColor: message.includes("Error") ? "#fee2e2" : "#d1fae5",
-            color: message.includes("Error") ? "#991b1b" : "#065f46",
-            padding: "12px 16px",
-            borderRadius: "6px",
-            marginBottom: "20px",
-            fontSize: "14px",
-            fontWeight: "500",
-          }}>
+          <div className={`student-profile__banner student-profile__banner--${message.includes("Error") ? "error" : "success"}`}>
             {message}
           </div>
         )}
 
-        {/* Account Information */}
         <Card title="👤 Account Information">
-          <div style={{ maxWidth: "400px" }}>
+          <div className="student-profile__account-info">
             {isEditing ? (
               <>
-                <Input
-                  label="Username"
-                  name="username"
-                  value={formData.username || ""}
-                  onChange={handleChange}
-                  disabled
-                />
-                <div style={{ display: "flex", gap: "10px", marginTop: "20px" }}>
+                <Input label="Username" name="username" value={formData.username || ""} onChange={handleChange} disabled />
+                <div className="student-profile__edit-actions">
                   <Button onClick={handleSave}>Save Changes</Button>
                   <Button variant="outline" onClick={() => setIsEditing(false)}>Cancel</Button>
                 </div>
               </>
             ) : (
               <>
-                <div style={{ marginBottom: "16px" }}>
-                  <div style={{ fontSize: "12px", color: "#888", marginBottom: "4px" }}>Username</div>
-                  <div style={{ fontSize: "16px", fontWeight: "600", color: "#1a1a2e" }}>{profile.username}</div>
+                <div>
+                  <div className="student-profile__field-label">Username</div>
+                  <div className="student-profile__field-value">{profile.username}</div>
                 </div>
                 <Button onClick={() => setIsEditing(true)}>Edit Profile</Button>
               </>
@@ -97,40 +76,27 @@ export default function StudentProfile() {
           </div>
         </Card>
 
-        {/* Security */}
         <Card title="🔒 Security">
-          <div style={{ maxWidth: "400px" }}>
-            <p style={{ fontSize: "14px", color: "#666", marginBottom: "16px" }}>
-              Keep your account secure by using a strong password and enabling 2-factor authentication.
-            </p>
-            <Button variant="secondary" size="sm">
-              Change Password
-            </Button>
+          <div className="student-profile__account-info">
+            <p className="student-profile__security-text">Keep your account secure by using a strong password and enabling 2-factor authentication.</p>
+            <Button variant="secondary" size="sm">Change Password</Button>
           </div>
         </Card>
 
-        {/* 2FA Settings */}
         <Card title="🔐 Two-Factor Authentication">
-          <div style={{ maxWidth: "400px" }}>
-            <p style={{ fontSize: "14px", color: "#666", marginBottom: "16px" }}>
-              Two-factor authentication adds an extra layer of security to your account.
-            </p>
+          <div className="student-profile__account-info">
+            <p className="student-profile__security-text">Two-factor authentication adds an extra layer of security to your account.</p>
             <Badge status="active">Enabled</Badge>
-            <div style={{ marginTop: "16px" }}>
-              <Button variant="secondary" size="sm">
-                View Secret
-              </Button>
+            <div className="student-profile__2fa-actions">
+              <Button variant="secondary" size="sm">View Secret</Button>
             </div>
           </div>
         </Card>
 
-        {/* Login History */}
         <Card title="📋 Recent Login Activity">
-          <div style={{ fontSize: "14px", color: "#666" }}>
+          <div className="student-profile__login-activity">
             <p>Last login: {new Date().toLocaleDateString()} at {new Date().toLocaleTimeString()}</p>
-            <p style={{ fontSize: "12px", color: "#999", margin: 0 }}>
-              Currently logged in from this device
-            </p>
+            <p className="student-profile__login-note">Currently logged in from this device</p>
           </div>
         </Card>
       </div>

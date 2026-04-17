@@ -1,0 +1,94 @@
+.student-details {
+  &__th {
+    padding: 12px 16px;
+    text-align: left;
+    font-size: 12px;
+    font-weight: 600;
+    color: #6b7280;
+    background-color: #f9fafb;
+    border-bottom: 1px solid #e5e7eb;
+  }
+
+  &__td {
+    padding: 12px 16px;
+    font-size: 14px;
+    color: #374151;
+    border-bottom: 1px solid #f3f4f6;
+  }
+
+  &__table { width: 100%; border-collapse: collapse; }
+
+  &__info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+  }
+
+  &__info-item-label {
+    font-size: 12px;
+    color: #888;
+    margin-bottom: 4px;
+  }
+
+  &__info-item-value {
+    font-weight: 600;
+    color: #374151;
+
+    &--name {
+      font-size: 18px;
+      color: #1a1a2e;
+    }
+
+    &--lg { font-size: 16px; }
+
+    &--fee {
+      font-size: 16px;
+      color: #4f46e5;
+    }
+  }
+
+  &__progress-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+  }
+
+  &__attendance-summary {
+    font-size: 14px;
+    color: #374151;
+
+    > div { margin-bottom: 6px; }
+  }
+
+  &__present { color: #16a34a; font-weight: 600; }
+  &__absent { color: #ef4444; font-weight: 600; }
+
+  &__note-item {
+    padding: 12px;
+    background-color: #f9fafb;
+    border-radius: 6px;
+    border-left: 3px solid #4f46e5;
+  }
+
+  &__note-text {
+    font-size: 14px;
+    color: #374151;
+    margin-bottom: 4px;
+  }
+
+  &__note-date {
+    font-size: 12px;
+    color: #999;
+  }
+
+  &__notes-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  &__empty {
+    text-align: center;
+    color: #888;
+  }
+}

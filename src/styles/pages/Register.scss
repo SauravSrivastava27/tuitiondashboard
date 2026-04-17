@@ -1,0 +1,262 @@
+.register {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background-color: #f5f6fa;
+  padding: 20px;
+
+  &__card {
+    background: #fff;
+    padding: 40px 32px;
+    border-radius: 12px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 420px;
+  }
+
+  &__header { margin-bottom: 32px; }
+
+  &__title {
+    text-align: center;
+    margin-bottom: 8px;
+    color: #1a1a2e;
+    font-size: 28px;
+    font-weight: 700;
+  }
+
+  &__subtitle {
+    text-align: center;
+    color: #666;
+    font-size: 14px;
+    margin: 0;
+  }
+
+  &__info {
+    text-align: center;
+    font-size: 14px;
+    color: #555;
+    margin-bottom: 24px;
+    line-height: 1.6;
+  }
+
+  &__form {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+  }
+
+  &__field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  &__label {
+    font-size: 14px;
+    font-weight: 600;
+    color: #374151;
+  }
+
+  &__input {
+    padding: 10px 12px;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    font-size: 14px;
+    font-family: 'Segoe UI', Roboto, sans-serif;
+    transition: border-color 0.2s;
+  }
+
+  &__otp-input {
+    padding: 12px;
+    border: 2px solid #4f46e5;
+    border-radius: 6px;
+    font-size: 24px;
+    text-align: center;
+    letter-spacing: 8px;
+    font-weight: 700;
+    font-family: 'Courier New', monospace;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  &__error {
+    color: #ef4444;
+    font-size: 13px;
+    margin: 0;
+    padding: 8px 12px;
+    background-color: #fee2e2;
+    border-radius: 6px;
+    border: 1px solid #fecaca;
+  }
+
+  &__button {
+    padding: 12px;
+    background-color: #4f46e5;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    width: 100%;
+  }
+
+  &__back-btn {
+    width: 100%;
+    padding: 10px;
+    background-color: transparent;
+    color: #374151;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 8px;
+    transition: all 0.2s;
+  }
+
+  &__divider {
+    text-align: center;
+    color: #aaa;
+    font-size: 12px;
+    margin: 20px 0;
+    font-weight: 500;
+  }
+
+  &__link {
+    text-align: center;
+    font-size: 14px;
+    color: #555;
+    margin: 12px 0 0 0;
+  }
+
+  &__link-text {
+    color: #4f46e5;
+    text-decoration: none;
+    font-weight: 600;
+  }
+
+  &__success-icon {
+    text-align: center;
+    font-size: 64px;
+    color: #16a34a;
+    margin-bottom: 16px;
+  }
+
+  &__role-info-box {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    padding: 12px;
+    background-color: #f9fafb;
+    border-radius: 6px;
+    margin-bottom: 16px;
+  }
+
+  &__role-info-label {
+    font-size: 13px;
+    font-weight: 600;
+    color: #374151;
+  }
+
+  &__role-badge {
+    padding: 4px 12px;
+    border-radius: 12px;
+    color: #fff;
+    font-weight: 600;
+    font-size: 12px;
+
+    &--admin { background-color: #4f46e5; }
+    &--student { background-color: #10b981; }
+  }
+
+  &__admin-section {
+    padding: 12px;
+    background-color: #f0f2f5;
+    border-radius: 6px;
+    margin-bottom: 16px;
+    border: 1px solid #ddd;
+  }
+
+  &__checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #374151;
+    cursor: pointer;
+  }
+
+  &__checkbox {
+    cursor: pointer;
+    width: 16px;
+    height: 16px;
+  }
+
+  &__hint {
+    font-size: 12px;
+    color: #666;
+    margin-top: 8px;
+    margin-bottom: 0;
+  }
+
+  &__qr-wrapper {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 24px;
+  }
+
+  &__qr-image {
+    width: 200px;
+    height: 200px;
+    border: 2px solid #e5e7eb;
+    border-radius: 8px;
+  }
+
+  &__qr-help {
+    text-align: center;
+    font-size: 14px;
+    color: #555;
+    margin-bottom: 20px;
+    line-height: 1.5;
+  }
+
+  &__2fa-section {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  &__features-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: #374151;
+    margin: 0 0 8px 0;
+  }
+
+  &__features-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    font-size: 14px;
+    color: #555;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  &__code-expiry-note {
+    font-size: 13px;
+    color: #059669;
+    background-color: #d1fae5;
+    border: 1px solid #6ee7b7;
+    border-radius: 6px;
+    padding: 8px 12px;
+    text-align: center;
+    margin: 0 0 16px 0;
+  }
+}

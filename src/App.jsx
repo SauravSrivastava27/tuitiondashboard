@@ -12,7 +12,7 @@ import First2FASetup from "./pages/First2FASetup";
 import Landing from "./pages/Landing";
 import AdminDashboard from "./pages/AdminDashboard";
 import AdminStudentManagement from "./pages/AdminStudentManagement";
-import AdminPanelNew from "./pages/AdminPanelNew";
+import AdminPanel from "./pages/AdminPanel";
 import AdminFeeManagement from "./pages/AdminFeeManagement";
 import AdminReports from "./pages/AdminReports";
 
@@ -42,7 +42,7 @@ export default function App() {
 
         {/* Admin routes */}
         <Route path="/admin/dashboard" element={<AdminRoute><AdminDashboard /></AdminRoute>} />
-        <Route path="/admin/users" element={<AdminRoute><AdminPanelNew /></AdminRoute>} />
+        <Route path="/admin/users" element={<AdminRoute><AdminPanel /></AdminRoute>} />
         <Route path="/admin/students" element={<AdminRoute><AdminStudentManagement /></AdminRoute>} />
         <Route path="/admin/fees" element={<AdminRoute><AdminFeeManagement /></AdminRoute>} />
         <Route path="/admin/reports" element={<AdminRoute><AdminReports /></AdminRoute>} />

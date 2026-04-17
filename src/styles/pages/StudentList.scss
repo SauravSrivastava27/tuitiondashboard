@@ -1,0 +1,202 @@
+.student-list {
+  &__banner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: #4f46e5;
+    border-radius: 12px;
+    padding: 24px 28px;
+    margin-bottom: 24px;
+    color: #fff;
+  }
+
+  &__banner-left {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  &__banner-avatar {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 24px;
+    flex-shrink: 0;
+  }
+
+  &__banner-name {
+    font-size: 22px;
+    font-weight: 700;
+  }
+
+  &__banner-sub {
+    font-size: 14px;
+    opacity: 0.85;
+    margin-top: 2px;
+  }
+
+  &__stats-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+
+  &__stat-card {
+    background-color: #fff;
+    border-radius: 10px;
+    padding: 20px 16px;
+    box-shadow: 0 1px 6px rgba(0, 0, 0, 0.07);
+    text-align: center;
+  }
+
+  &__stat-icon {
+    font-size: 24px;
+    margin-bottom: 8px;
+  }
+
+  &__stat-label {
+    font-size: 12px;
+    color: #888;
+    margin-top: 4px;
+    font-weight: 500;
+  }
+
+  &__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 16px;
+    margin-bottom: 16px;
+  }
+
+  &__card {
+    background-color: #fff;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 1px 6px rgba(0, 0, 0, 0.07);
+    margin-bottom: 16px;
+  }
+
+  &__card-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: #1a1a2e;
+    margin-bottom: 16px;
+  }
+
+  &__info-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  &__info-label {
+    font-size: 13px;
+    color: #888;
+    white-space: nowrap;
+  }
+
+  &__info-value {
+    font-size: 14px;
+    font-weight: 600;
+    color: #374151;
+    text-align: right;
+  }
+
+  &__table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  &__th {
+    padding: 10px 12px;
+    text-align: left;
+    font-size: 11px;
+    font-weight: 600;
+    color: #6b7280;
+    background-color: #f9fafb;
+    border-bottom: 1px solid #e5e7eb;
+    text-transform: uppercase;
+  }
+
+  &__td {
+    padding: 12px;
+    font-size: 14px;
+    color: #374151;
+    border-bottom: 1px solid #f3f4f6;
+  }
+
+  &__attendance-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 12px;
+  }
+
+  &__dot {
+    width: 14px;
+    height: 14px;
+    border-radius: 3px;
+    cursor: default;
+    display: inline-block;
+  }
+
+  &__attendance-legend {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+    font-size: 12px;
+    color: #888;
+  }
+
+  &__quick-links {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 12px;
+    margin-bottom: 8px;
+  }
+
+  &__quick-link-btn {
+    background-color: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    padding: 18px 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+    transition: box-shadow 0.2s;
+  }
+
+  &__not-linked {
+    text-align: center;
+    padding: 80px 24px;
+  }
+
+  &__not-linked-icon {
+    font-size: 64px;
+    margin-bottom: 16px;
+  }
+
+  &__not-linked-title {
+    font-size: 22px;
+    font-weight: 700;
+    color: #1a1a2e;
+    margin-bottom: 8px;
+  }
+
+  &__not-linked-text {
+    font-size: 14px;
+    color: #888;
+    max-width: 320px;
+    margin: 0 auto;
+  }
+}

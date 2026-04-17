@@ -1,213 +1,180 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import AdminLayout from "../layouts/AdminLayout";
 import api from "../api";
-import { getUsername, clearAuth } from "../utils/auth";
+import Button from "../components/Button";
+import Modal from "../components/Modal";
+import Badge from "../components/Badge";
+import LoadingSpinner from "../components/LoadingSpinner";
+import "../styles/pages/AdminPanel.scss";
 
 export default function AdminPanel() {
+  const currentUsername = localStorage.getItem("username");
   const [users, setUsers] = useState([]);
+  const [students, setStudents] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [saving, setSaving] = useState(null); // userId being saved
   const [message, setMessage] = useState("");
-  const navigate = useNavigate();
+
+  const [showRoleModal, setShowRoleModal] = useState(false);
+  const [editingUser, setEditingUser] = useState(null);
+  const [newRole, setNewRole] = useState("");
+
+  const [showLinkModal, setShowLinkModal] = useState(false);
+  const [linkingUser, setLinkingUser] = useState(null);
+  const [selectedStudentId, setSelectedStudentId] = useState("");
+
+  const showMsg = (msg) => { setMessage(msg); setTimeout(() => setMessage(""), 3000); };
 
   useEffect(() => {
-    api.get("/api/users")
-      .then(res => setUsers(res.data))
-      .finally(() => setLoading(false));
+    Promise.all([api.get("/api/users"), api.get("/api/students?limit=1000")])
+      .then(([usersRes, studentsRes]) => {
+        setUsers(usersRes.data);
+        setStudents(studentsRes.data.students || studentsRes.data);
+        setLoading(false);
+      })
+      .catch(() => setLoading(false));
   }, []);
 
-  const handleRoleChange = (userId, newRole) => {
-    setUsers(users.map(u => u._id === userId ? { ...u, role: newRole } : u));
-  };
+  const handleEditRoleClick = (user) => { setEditingUser(user); setNewRole(user.role); setShowRoleModal(true); };
 
-  const handleSaveRole = async (userId) => {
-    const user = users.find(u => u._id === userId);
-    setSaving(userId);
-    setMessage("");
+  const handleSaveRole = async () => {
     try {
-      await api.put(`/api/users/${userId}/role`, { role: user.role });
-      setMessage(`Role updated for ${user.username}`);
-      setTimeout(() => setMessage(""), 3000);
-    } catch {
-      setMessage("Failed to update role");
-    } finally {
-      setSaving(null);
-    }
+      await api.patch(`/api/users/${editingUser._id}/role`, { role: newRole });
+      setUsers(users.map(u => u._id === editingUser._id ? { ...u, role: newRole } : u));
+      setShowRoleModal(false);
+      showMsg("Role updated successfully");
+    } catch { showMsg("Failed to update role"); }
   };
 
-  const handleLogout = async () => {
-    try { await api.post("/api/auth/logout"); } finally {
-      clearAuth();
-      navigate("/login");
-    }
+  const handleLinkClick = (user) => { setLinkingUser(user); setSelectedStudentId(user.studentId?._id || user.studentId || ""); setShowLinkModal(true); };
+
+  const handleSaveLink = async () => {
+    if (!selectedStudentId) return showMsg("Please select a student");
+    try {
+      const res = await api.put("/api/student-users/link", { userId: linkingUser._id, studentId: selectedStudentId });
+      const linked = students.find(s => s._id === selectedStudentId);
+      setUsers(users.map(u => u._id === linkingUser._id ? { ...u, studentId: linked || selectedStudentId } : u));
+      setShowLinkModal(false);
+      showMsg(res.data.message);
+    } catch (err) { showMsg(err.response?.data?.message || "Failed to link student"); }
+  };
+
+  const handleUnlink = async (user) => {
+    if (!window.confirm(`Unlink student from "${user.username}"?`)) return;
+    try {
+      await api.put(`/api/student-users/unlink/${user._id}`);
+      setUsers(users.map(u => u._id === user._id ? { ...u, studentId: null } : u));
+      showMsg(`Unlinked student from "${user.username}"`);
+    } catch { showMsg("Failed to unlink student"); }
+  };
+
+  const handleDelete = async (userId, username) => {
+    if (!window.confirm(`Delete user ${username}? This action cannot be undone.`)) return;
+    try {
+      await api.delete(`/api/users/${userId}`);
+      setUsers(users.filter(u => u._id !== userId));
+      showMsg(`User ${username} deleted`);
+    } catch { showMsg("Failed to delete user"); }
+  };
+
+  const getLinkedStudent = (user) => {
+    if (!user.studentId) return null;
+    const id = user.studentId?._id || user.studentId;
+    return students.find(s => s._id === id) || null;
   };
 
   return (
-    <div style={styles.page}>
-      {/* Header */}
-      <div style={styles.header}>
-        <div style={styles.headerLeft}>
-          <span style={styles.logo}>📚</span>
-          <div>
-            <div style={styles.headerTitle}>Admin Panel</div>
-            <div style={styles.headerSub}>Logged in as <strong>{getUsername()}</strong></div>
-          </div>
-        </div>
-        <div style={styles.headerRight}>
-          <button onClick={() => navigate("/dashboard")} style={styles.secondaryBtn}>Student Dashboard</button>
-          <button onClick={handleLogout} style={styles.logoutBtn}>Logout</button>
-        </div>
-      </div>
-
-      <div style={styles.content}>
-        <div style={styles.pageHeader}>
-          <h2 style={styles.pageTitle}>User Management</h2>
-          <p style={styles.pageDesc}>View all registered users and manage their roles.</p>
-        </div>
+    <AdminLayout>
+      <div>
+        <h1 className="admin-panel-new__title">User Management</h1>
+        <p className="admin-panel-new__subtitle">View, manage roles, and link users to student profiles</p>
 
         {message && (
-          <div style={message.includes("Failed") ? styles.errorBanner : styles.successBanner}>
+          <div className={`admin-panel-new__banner admin-panel-new__banner--${message.toLowerCase().includes("fail") ? "error" : "success"}`}>
             {message}
           </div>
         )}
 
-        {loading ? (
-          <div style={styles.loading}>Loading users...</div>
-        ) : (
-          <div style={styles.tableWrapper}>
-            <table style={styles.table}>
+        {loading ? <LoadingSpinner /> : (
+          <div className="admin-panel-new__table-wrapper">
+            <table className="admin-panel-new__table">
               <thead>
                 <tr>
-                  <th style={styles.th}>Username</th>
-                  <th style={styles.th}>Phone</th>
-                  <th style={styles.th}>Current Role</th>
-                  <th style={styles.th}>Change Role</th>
-                  <th style={styles.th}>Action</th>
+                  {["Username", "Phone", "Role", "Linked Student", "Actions"].map(h => (
+                    <th key={h} className="admin-panel-new__th">{h}</th>
+                  ))}
                 </tr>
               </thead>
               <tbody>
-                {users.map(user => (
-                  <tr key={user._id} style={styles.tr}>
-                    <td style={styles.td}>
-                      <div style={styles.userCell}>
-                        <div style={styles.avatar}>{user.username[0].toUpperCase()}</div>
-                        <span>{user.username}</span>
-                      </div>
-                    </td>
-                    <td style={styles.td}>{user.phone || "—"}</td>
-                    <td style={styles.td}>
-                      <span style={user.role === "admin" ? styles.badgeAdmin : styles.badgeUser}>
-                        {user.role || "user"}
-                      </span>
-                    </td>
-                    <td style={styles.td}>
-                      <select
-                        value={user.role || "user"}
-                        onChange={e => handleRoleChange(user._id, e.target.value)}
-                        style={styles.select}
-                      >
-                        <option value="user">user</option>
-                        <option value="admin">admin</option>
-                      </select>
-                    </td>
-                    <td style={styles.td}>
-                      <button
-                        onClick={() => handleSaveRole(user._id)}
-                        disabled={saving === user._id}
-                        style={saving === user._id ? styles.saveBtnDisabled : styles.saveBtn}
-                      >
-                        {saving === user._id ? "Saving..." : "Save"}
-                      </button>
-                    </td>
-                  </tr>
-                ))}
+                {users.map(user => {
+                  const linked = getLinkedStudent(user);
+                  return (
+                    <tr key={user._id}>
+                      <td className="admin-panel-new__td">
+                        <div className="admin-panel-new__user-cell">
+                          <div className="admin-panel-new__avatar">{user.username[0]?.toUpperCase()}</div>
+                          <span>{user.username}</span>
+                        </div>
+                      </td>
+                      <td className="admin-panel-new__td">{user.phone || "—"}</td>
+                      <td className="admin-panel-new__td"><Badge status={user.role}>{user.role}</Badge></td>
+                      <td className="admin-panel-new__td">
+                        {linked ? (
+                          <div className="admin-panel-new__linked-cell">
+                            <span className="admin-panel-new__linked-badge">{linked.name}</span>
+                            <button onClick={() => handleUnlink(user)} title="Unlink" className="admin-panel-new__unlink-btn">✕</button>
+                          </div>
+                        ) : (
+                          <span className="admin-panel-new__not-linked">Not linked</span>
+                        )}
+                      </td>
+                      <td className="admin-panel-new__td">
+                        <div className="admin-panel-new__row-actions">
+                          <Button variant="outline" size="sm" onClick={() => handleEditRoleClick(user)} disabled={user.username === currentUsername} title={user.username === currentUsername ? "You cannot change your own role" : ""}>Edit Role</Button>
+                          {user.role !== "admin" && (
+                            <Button variant="primary" size="sm" onClick={() => handleLinkClick(user)}>{linked ? "Change Student" : "Link Student"}</Button>
+                          )}
+                          <Button variant="danger" size="sm" onClick={() => handleDelete(user._id, user.username)} disabled={user.username === currentUsername} title={user.username === currentUsername ? "You cannot delete your own account" : ""}>Delete</Button>
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
-            {users.length === 0 && (
-              <div style={styles.empty}>No users found.</div>
-            )}
+            {users.length === 0 && <div className="admin-panel-new__empty">No users found</div>}
           </div>
         )}
       </div>
-    </div>
+
+      <Modal isOpen={showRoleModal} onClose={() => setShowRoleModal(false)} title="Edit User Role">
+        <p style={{ marginBottom: "16px", color: "#374151" }}>User: <strong>{editingUser?.username}</strong></p>
+        <div className="admin-panel-new__modal-field">
+          <label className="admin-panel-new__modal-label">Role</label>
+          <select value={newRole} onChange={(e) => setNewRole(e.target.value)} className="admin-panel-new__modal-select">
+            <option value="admin">admin</option>
+            <option value="student">student</option>
+          </select>
+        </div>
+        <div className="admin-panel-new__modal-actions">
+          <Button onClick={handleSaveRole}>Save Changes</Button>
+          <Button variant="outline" onClick={() => setShowRoleModal(false)}>Cancel</Button>
+        </div>
+      </Modal>
+
+      <Modal isOpen={showLinkModal} onClose={() => setShowLinkModal(false)} title="Link User to Student">
+        <p style={{ marginBottom: "16px", color: "#374151" }}>Select the student profile to link with <strong>{linkingUser?.username}</strong>:</p>
+        <div className="admin-panel-new__modal-field">
+          <label className="admin-panel-new__modal-label">Student</label>
+          <select value={selectedStudentId} onChange={(e) => setSelectedStudentId(e.target.value)} className="admin-panel-new__modal-select">
+            <option value="">— Select a student —</option>
+            {students.map(s => <option key={s._id} value={s._id}>{s.name} — {s.className} ({s.school})</option>)}
+          </select>
+        </div>
+        <div className="admin-panel-new__modal-actions">
+          <Button onClick={handleSaveLink}>Link Student</Button>
+          <Button variant="outline" onClick={() => setShowLinkModal(false)}>Cancel</Button>
+        </div>
+      </Modal>
+    </AdminLayout>
   );
 }
-
-const styles = {
-  page: { minHeight: "100vh", backgroundColor: "#f5f6fa", fontFamily: "'Segoe UI', Roboto, sans-serif" },
-
-  header: {
-    display: "flex", justifyContent: "space-between", alignItems: "center",
-    padding: "14px 32px", backgroundColor: "#fff", borderBottom: "1px solid #e5e7eb",
-    position: "sticky", top: 0, zIndex: 10,
-  },
-  headerLeft: { display: "flex", alignItems: "center", gap: "12px" },
-  logo: { fontSize: "28px" },
-  headerTitle: { fontSize: "18px", fontWeight: "700", color: "#1a1a2e" },
-  headerSub: { fontSize: "12px", color: "#888" },
-  headerRight: { display: "flex", gap: "10px" },
-  secondaryBtn: {
-    padding: "8px 16px", border: "1px solid #4f46e5", borderRadius: "6px",
-    backgroundColor: "transparent", color: "#4f46e5", fontWeight: "600", cursor: "pointer", fontSize: "13px",
-  },
-  logoutBtn: {
-    padding: "8px 16px", border: "none", borderRadius: "6px",
-    backgroundColor: "#ef4444", color: "#fff", fontWeight: "600", cursor: "pointer", fontSize: "13px",
-  },
-
-  content: { maxWidth: "1000px", margin: "0 auto", padding: "32px 24px" },
-  pageHeader: { marginBottom: "24px" },
-  pageTitle: { fontSize: "24px", fontWeight: "700", color: "#1a1a2e", margin: "0 0 6px" },
-  pageDesc: { fontSize: "14px", color: "#666", margin: 0 },
-
-  successBanner: {
-    backgroundColor: "#d1fae5", color: "#065f46", padding: "10px 16px",
-    borderRadius: "6px", marginBottom: "16px", fontSize: "14px", fontWeight: "500",
-  },
-  errorBanner: {
-    backgroundColor: "#fee2e2", color: "#991b1b", padding: "10px 16px",
-    borderRadius: "6px", marginBottom: "16px", fontSize: "14px", fontWeight: "500",
-  },
-
-  loading: { textAlign: "center", padding: "60px", color: "#888", fontSize: "15px" },
-  empty: { textAlign: "center", padding: "40px", color: "#aaa", fontSize: "14px" },
-
-  tableWrapper: { backgroundColor: "#fff", borderRadius: "10px", boxShadow: "0 1px 6px rgba(0,0,0,0.07)", overflow: "hidden" },
-  table: { width: "100%", borderCollapse: "collapse" },
-  th: {
-    padding: "12px 16px", textAlign: "left", fontSize: "12px", fontWeight: "600",
-    color: "#6b7280", backgroundColor: "#f9fafb", borderBottom: "1px solid #e5e7eb",
-    textTransform: "uppercase", letterSpacing: "0.5px",
-  },
-  tr: { borderBottom: "1px solid #f3f4f6" },
-  td: { padding: "14px 16px", fontSize: "14px", color: "#374151", verticalAlign: "middle" },
-
-  userCell: { display: "flex", alignItems: "center", gap: "10px" },
-  avatar: {
-    width: "32px", height: "32px", borderRadius: "50%", backgroundColor: "#4f46e5",
-    color: "#fff", display: "flex", alignItems: "center", justifyContent: "center",
-    fontWeight: "700", fontSize: "14px", flexShrink: 0,
-  },
-
-  badgeAdmin: {
-    display: "inline-block", padding: "3px 10px", borderRadius: "100px",
-    backgroundColor: "#ede9fe", color: "#4f46e5", fontSize: "12px", fontWeight: "600",
-  },
-  badgeUser: {
-    display: "inline-block", padding: "3px 10px", borderRadius: "100px",
-    backgroundColor: "#f0fdf4", color: "#16a34a", fontSize: "12px", fontWeight: "600",
-  },
-
-  select: {
-    padding: "6px 10px", border: "1px solid #d1d5db", borderRadius: "6px",
-    fontSize: "13px", color: "#374151", backgroundColor: "#fff", cursor: "pointer",
-  },
-  saveBtn: {
-    padding: "6px 16px", border: "none", borderRadius: "6px",
-    backgroundColor: "#4f46e5", color: "#fff", fontWeight: "600", cursor: "pointer", fontSize: "13px",
-  },
-  saveBtnDisabled: {
-    padding: "6px 16px", border: "none", borderRadius: "6px",
-    backgroundColor: "#a5b4fc", color: "#fff", fontWeight: "600", cursor: "not-allowed", fontSize: "13px",
-  },
-};

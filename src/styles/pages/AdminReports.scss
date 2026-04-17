@@ -1,0 +1,127 @@
+.admin-reports {
+  &__title {
+    font-size: 24px;
+    font-weight: 700;
+    color: #1a1a2e;
+    margin: 0 0 6px;
+  }
+
+  &__subtitle {
+    font-size: 14px;
+    color: #666;
+    margin: 0 0 24px;
+  }
+
+  &__summary-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+    margin-bottom: 20px;
+  }
+
+  &__summary-item {
+    padding: 12px;
+    background-color: #f9fafb;
+    border-radius: 6px;
+  }
+
+  &__summary-label {
+    font-size: 12px;
+    color: #888;
+    margin-bottom: 4px;
+    text-transform: capitalize;
+  }
+
+  &__summary-count {
+    font-size: 18px;
+    font-weight: 700;
+    color: #1a1a2e;
+    margin-bottom: 4px;
+  }
+
+  &__summary-amount {
+    font-size: 14px;
+    color: #4f46e5;
+    font-weight: 600;
+  }
+
+  &__total-row {
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px solid #e5e7eb;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  &__total-label {
+    font-weight: 600;
+    color: #374151;
+  }
+
+  &__total-value {
+    font-size: 20px;
+    font-weight: 700;
+    color: #16a34a;
+  }
+
+  &__table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  &__table-wrapper {
+    overflow-x: auto;
+  }
+
+  &__th {
+    padding: 12px 16px;
+    text-align: left;
+    font-size: 12px;
+    font-weight: 600;
+    color: #6b7280;
+    background-color: #f9fafb;
+    border-bottom: 1px solid #e5e7eb;
+  }
+
+  &__td {
+    padding: 12px 16px;
+    font-size: 14px;
+    color: #374151;
+    border-bottom: 1px solid #f3f4f6;
+  }
+
+  &__status-badge {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 100px;
+    font-size: 12px;
+    font-weight: 600;
+
+    &--active {
+      background-color: #d1fae5;
+      color: #065f46;
+    }
+
+    &--inactive {
+      background-color: #fee2e2;
+      color: #991b1b;
+    }
+
+    &--paid {
+      background-color: #d1fae5;
+      color: #065f46;
+    }
+
+    &--pending {
+      background-color: #fef3c7;
+      color: #92400e;
+    }
+  }
+
+  &__empty {
+    padding: 20px;
+    text-align: center;
+    color: #aaa;
+  }
+}
