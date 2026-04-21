@@ -8,7 +8,9 @@ import LoadingSpinner from "../components/LoadingSpinner";
 import "../styles/pages/AdminPanel.scss";
 
 export default function AdminPanel() {
-  const currentUsername = localStorage.getItem("username");
+  const currentUsername = localStorage.getItem("username"); // stores email
+  const displayName = (user) => user.name || user.email || user.username || "Unknown";
+  const avatarChar = (user) => (user.name || user.email || user.username || "?")[0].toUpperCase();
   const [users, setUsers] = useState([]);
   const [students, setStudents] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -59,11 +61,11 @@ export default function AdminPanel() {
   };
 
   const handleUnlink = async (user) => {
-    if (!window.confirm(`Unlink student from "${user.username}"?`)) return;
+    if (!window.confirm(`Unlink student from "${displayName(user)}"?`)) return;
     try {
       await api.put(`/api/student-users/unlink/${user._id}`);
       setUsers(users.map(u => u._id === user._id ? { ...u, studentId: null } : u));
-      showMsg(`Unlinked student from "${user.username}"`);
+      showMsg(`Unlinked student from "${displayName(user)}"`);
     } catch { showMsg("Failed to unlink student"); }
   };
 
@@ -111,8 +113,8 @@ export default function AdminPanel() {
                     <tr key={user._id}>
                       <td className="admin-panel-new__td">
                         <div className="admin-panel-new__user-cell">
-                          <div className="admin-panel-new__avatar">{user.username[0]?.toUpperCase()}</div>
-                          <span>{user.username}</span>
+                          <div className="admin-panel-new__avatar">{avatarChar(user)}</div>
+                          <span>{displayName(user)}</span>
                         </div>
                       </td>
                       <td className="admin-panel-new__td">{user.phone || "—"}</td>
@@ -129,11 +131,11 @@ export default function AdminPanel() {
                       </td>
                       <td className="admin-panel-new__td">
                         <div className="admin-panel-new__row-actions">
-                          <Button variant="outline" size="sm" onClick={() => handleEditRoleClick(user)} disabled={user.username === currentUsername} title={user.username === currentUsername ? "You cannot change your own role" : ""}>Edit Role</Button>
+                          <Button variant="outline" size="sm" onClick={() => handleEditRoleClick(user)} disabled={(user.email || user.username) === currentUsername} title={(user.email || user.username) === currentUsername ? "You cannot change your own role" : ""}>Edit Role</Button>
                           {user.role !== "admin" && (
                             <Button variant="primary" size="sm" onClick={() => handleLinkClick(user)}>{linked ? "Change Student" : "Link Student"}</Button>
                           )}
-                          <Button variant="danger" size="sm" onClick={() => handleDelete(user._id, user.username)} disabled={user.username === currentUsername} title={user.username === currentUsername ? "You cannot delete your own account" : ""}>Delete</Button>
+                          <Button variant="danger" size="sm" onClick={() => handleDelete(user._id, displayName(user))} disabled={(user.email || user.username) === currentUsername} title={(user.email || user.username) === currentUsername ? "You cannot delete your own account" : ""}>Delete</Button>
                         </div>
                       </td>
                     </tr>
@@ -147,7 +149,7 @@ export default function AdminPanel() {
       </div>
 
       <Modal isOpen={showRoleModal} onClose={() => setShowRoleModal(false)} title="Edit User Role">
-        <p style={{ marginBottom: "16px", color: "#374151" }}>User: <strong>{editingUser?.username}</strong></p>
+        <p style={{ marginBottom: "16px", color: "#374151" }}>User: <strong>{editingUser ? displayName(editingUser) : ""}</strong></p>
         <div className="admin-panel-new__modal-field">
           <label className="admin-panel-new__modal-label">Role</label>
           <select value={newRole} onChange={(e) => setNewRole(e.target.value)} className="admin-panel-new__modal-select">
@@ -162,7 +164,7 @@ export default function AdminPanel() {
       </Modal>
 
       <Modal isOpen={showLinkModal} onClose={() => setShowLinkModal(false)} title="Link User to Student">
-        <p style={{ marginBottom: "16px", color: "#374151" }}>Select the student profile to link with <strong>{linkingUser?.username}</strong>:</p>
+        <p style={{ marginBottom: "16px", color: "#374151" }}>Select the student profile to link with <strong>{linkingUser ? displayName(linkingUser) : ""}</strong>:</p>
         <div className="admin-panel-new__modal-field">
           <label className="admin-panel-new__modal-label">Student</label>
           <select value={selectedStudentId} onChange={(e) => setSelectedStudentId(e.target.value)} className="admin-panel-new__modal-select">

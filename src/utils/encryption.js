@@ -1,12 +1,8 @@
 import axios from "axios";
 
-let cachedPublicKey = null;
-
 const fetchPublicKey = async () => {
-  if (cachedPublicKey) return cachedPublicKey;
   const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/auth/public-key`);
-  cachedPublicKey = res.data.publicKey;
-  return cachedPublicKey;
+  return res.data.publicKey;
 };
 
 const pemToArrayBuffer = (pem) => {

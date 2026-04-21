@@ -184,9 +184,6 @@ export default function AdminDashboard() {
                         <div className="text-lg font-black uppercase tracking-tighter text-nb-black leading-none mb-1">
                           {user.studentName}
                         </div>
-                        <div className="text-[10px] font-black text-nb-black/30 uppercase tracking-[0.2em]">
-                          UID: <span className="text-nb-violet">{user.username}</span>
-                        </div>
                       </div>
                     </div>
                     <div className="flex items-center gap-4">

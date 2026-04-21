@@ -61,7 +61,38 @@
   }
 
   &__present { color: #16a34a; font-weight: 600; }
-  &__absent { color: #ef4444; font-weight: 600; }
+  &__absent  { color: #ef4444; font-weight: 600; }
+
+  &__attendance-dots {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    margin-bottom: 10px;
+  }
+
+  &__dot {
+    width: 16px;
+    height: 16px;
+    border-radius: 3px;
+    cursor: default;
+
+    &--present { background: #16a34a; }
+    &--absent  { background: #ef4444; }
+  }
+
+  &__attendance-legend {
+    display: flex;
+    gap: 16px;
+    font-size: 13px;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+
+  &__attendance-stat {
+    margin-left: auto;
+    color: #6b7280;
+    font-weight: 600;
+  }
 
   &__note-item {
     padding: 12px;

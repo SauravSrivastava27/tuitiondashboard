@@ -7,6 +7,7 @@ import StudentLayout from "../layouts/StudentLayout";
 import AdminLayout from "../layouts/AdminLayout";
 import LoadingSpinner from "../components/LoadingSpinner";
 import { encryptPassword } from "../utils/encryption";
+import { validatePassword } from "../utils/validation";
 import "../styles/pages/UserProfile.scss";
 
 export default function UserProfile() {
@@ -25,10 +26,12 @@ export default function UserProfile() {
   const [pwForm, setPwForm] = useState({ current: "", newPw: "", confirm: "" });
   const [pwLoading, setPwLoading] = useState(false);
 
-  const [showRegenerate2FAModal, setShowRegenerate2FAModal] = useState(false);
-  const [qrCode, setQrCode] = useState("");
-  const [secret, setSecret] = useState("");
-  const [tfaLoading, setTfaLoading] = useState(false);
+  const [notes, setNotes] = useState([]);
+  const [noteText, setNoteText] = useState("");
+  const [noteSaving, setNoteSaving] = useState(false);
+  const [editingNoteId, setEditingNoteId] = useState(null);
+  const [editingNoteText, setEditingNoteText] = useState("");
+
 
   const showMsg = (text, error = false) => {
     setMessage({ text, error });
@@ -43,12 +46,14 @@ export default function UserProfile() {
         if (role === "student") {
           const sid = userRes.data.studentId;
           if (sid) {
-            const [stuRes, feeRes] = await Promise.all([
+            const [stuRes, feeRes, notesRes] = await Promise.all([
               api.get(`/api/students/${sid}`),
               api.get("/api/fees/my"),
+              api.get(`/api/students/${sid}/notes`),
             ]);
             setStudent(stuRes.data);
             setFees(feeRes.data.fees || []);
+            setNotes(notesRes.data.notes || []);
           }
         } else {
           const [statsRes, activityRes] = await Promise.all([
@@ -69,7 +74,8 @@ export default function UserProfile() {
 
   const handleChangePassword = async () => {
     if (pwForm.newPw !== pwForm.confirm) return showMsg("New passwords do not match", true);
-    if (pwForm.newPw.length < 6) return showMsg("Password must be at least 6 characters", true);
+    const pwError = validatePassword(pwForm.newPw);
+    if (pwError) return showMsg(pwError, true);
     setPwLoading(true);
     try {
       const [encCurrent, encNew] = await Promise.all([
@@ -87,29 +93,73 @@ export default function UserProfile() {
     }
   };
 
-  const handleRegenerate2FA = async () => {
-    setTfaLoading(true);
+
+  const handleAddNote = async () => {
+    if (!noteText.trim() || !student) return;
+    setNoteSaving(true);
     try {
-      const res = await api.post("/api/auth/regenerate-2fa", {});
-      setQrCode(res.data.qrCode);
-      setSecret(res.data.secret);
-      setShowRegenerate2FAModal(true);
+      const res = await api.post(`/api/students/${student._id}/notes`, { text: noteText.trim() });
+      setNotes(res.data.notes || []);
+      setNoteText("");
     } catch (err) {
-      showMsg(err.response?.data?.message || "Failed to regenerate 2FA", true);
+      showMsg(err.response?.data?.message || "Failed to add note", true);
     } finally {
-      setTfaLoading(false);
+      setNoteSaving(false);
+    }
+  };
+
+  const handleDeleteNote = async (noteId) => {
+    try {
+      const res = await api.delete(`/api/students/${student._id}/notes/${noteId}`);
+      setNotes(res.data.notes || []);
+    } catch (err) {
+      showMsg("Failed to delete note", true);
+    }
+  };
+
+  const handleEditNote = async (noteId) => {
+    if (!editingNoteText.trim()) return;
+    try {
+      const res = await api.put(`/api/students/${student._id}/notes/${noteId}`, { text: editingNoteText.trim() });
+      setNotes(res.data.notes || []);
+      setEditingNoteId(null);
+      setEditingNoteText("");
+    } catch (err) {
+      showMsg("Failed to edit note", true);
+    }
+  };
+
+  const handleMarkTodayAttendance = async () => {
+    try {
+      const res = await api.post(`/api/students/${student._id}/attendance/today`);
+      setStudent(res.data);
+    } catch (err) {
+      showMsg(err.response?.data?.message || "Failed to mark attendance", true);
     }
   };
 
   if (loading) return <Layout><LoadingSpinner /></Layout>;
 
   const attendance = student?.attendance || [];
+  const sortedAttendance = [...attendance].sort((a, b) => new Date(a.date) - new Date(b.date));
   const presentDays = attendance.filter(a => a.present).length;
   const attendancePct = attendance.length > 0 ? Math.round((presentDays / attendance.length) * 100) : null;
+
+  const todayStr = new Date().toDateString();
+  const isSunday = new Date().getDay() === 0;
+  const todayRecord = attendance.find(a => new Date(a.date).toDateString() === todayStr);
 
   const pendingFees = fees.filter(f => (f.amount - (f.paidAmount || 0)) > 0);
   const pendingTotal = pendingFees.reduce((s, f) => s + (f.amount - (f.paidAmount || 0)), 0);
   const nextDue = [...pendingFees].sort((a, b) => new Date(a.dueDate) - new Date(b.dueDate))[0];
+  const overdueFees = fees.filter(f => f.status === "overdue");
+
+  const greeting = () => {
+    const h = new Date().getHours();
+    if (h < 12) return "Good Morning";
+    if (h < 17) return "Good Afternoon";
+    return "Good Evening";
+  };
 
   return (
     <Layout>
@@ -121,9 +171,9 @@ export default function UserProfile() {
 
       <div className="user-profile__card">
         <div className="user-profile__account-header">
-          <div className="user-profile__avatar">{(user?.username || "?")[0].toUpperCase()}</div>
+          <div className="user-profile__avatar">{(user?.name || user?.email || "?")[0].toUpperCase()}</div>
           <div>
-            <div className="user-profile__username">{user?.username}</div>
+            <div className="user-profile__username">{user?.name || user?.email}</div>
             <div className="user-profile__meta">
               <span className={`user-profile__role-badge user-profile__role-badge--${role}`}>
                 {role === "admin" ? "👨‍💼 Admin" : "👤 Student"}
@@ -135,16 +185,13 @@ export default function UserProfile() {
               )}
             </div>
           </div>
-          <div style={{ marginLeft: "auto", display: "flex", gap: "10px" }}>
+          <div style={{ marginLeft: "auto" }}>
             <Button size="sm" variant="outline" onClick={() => setShowPasswordModal(true)}>🔑 Change Password</Button>
-            <Button size="sm" variant="secondary" onClick={handleRegenerate2FA} disabled={tfaLoading}>
-              {tfaLoading ? "..." : "🔄 Regen 2FA"}
-            </Button>
           </div>
         </div>
         <div className="user-profile__info-grid">
           <InfoItem label="Phone" value={user?.phone || "—"} />
-          <InfoItem label="2FA" value="✓ Enabled" />
+          <InfoItem label="Email" value={user?.email} />
           <InfoItem label="Role" value={role} />
           <InfoItem label="Account ID" value={user?._id?.slice(-8)} mono />
         </div>
@@ -154,6 +201,36 @@ export default function UserProfile() {
         <>
           {student ? (
             <>
+              {/* Greeting banner */}
+              <div className="user-profile__greeting">
+                <div>
+                  <div className="user-profile__greeting-text">{greeting()}, {student.name?.split(" ")[0] || user?.name || "Student"} 👋</div>
+                  <div className="user-profile__greeting-date">
+                    {new Date().toLocaleDateString("en-IN", { weekday: "long", day: "numeric", month: "long", year: "numeric" })}
+                  </div>
+                </div>
+                <div className="user-profile__today-status">
+                  {isSunday ? (
+                    <span className="user-profile__today-tag user-profile__today-tag--sunday">🌤 Sunday — No Class</span>
+                  ) : todayRecord ? (
+                    <span className={`user-profile__today-tag ${todayRecord.present ? "user-profile__today-tag--present" : "user-profile__today-tag--absent"}`}>
+                      {todayRecord.present ? "✓ Present Today" : "✗ Absent Today"}
+                    </span>
+                  ) : (
+                    <button className="user-profile__mark-btn" onClick={handleMarkTodayAttendance}>
+                      📍 Mark Present Today
+                    </button>
+                  )}
+                </div>
+              </div>
+
+              {/* Overdue fee alert */}
+              {overdueFees.length > 0 && (
+                <div className="user-profile__alert">
+                  ⚠️ You have {overdueFees.length} overdue fee{overdueFees.length > 1 ? "s" : ""}. Please clear dues soon.
+                </div>
+              )}
+
               <div className="user-profile__card">
                 <div className="user-profile__card-title">🎓 Student Profile</div>
                 <div className="user-profile__info-grid">
@@ -163,13 +240,15 @@ export default function UserProfile() {
                   <InfoItem label="Guardian" value={student.guardianName} />
                   <InfoItem label="Contact" value={student.contactNo} />
                   <InfoItem label="Status" value={<Badge status={student.status}>{student.status}</Badge>} />
+                  {student.progress?.academicLevel && <InfoItem label="Academic Level" value={student.progress.academicLevel} />}
+                  {student.progress?.performanceGrade && <InfoItem label="Performance Grade" value={<Badge status={student.progress.performanceGrade}>{student.progress.performanceGrade}</Badge>} />}
                 </div>
               </div>
 
               <div className="user-profile__stats-row">
                 <StatBox icon="📅" label="Attendance" value={attendancePct !== null ? `${attendancePct}%` : "N/A"} sub={attendancePct !== null ? `${presentDays}/${attendance.length} days` : "No records"} color={attendancePct >= 75 ? "#16a34a" : "#f59e0b"} bar={attendancePct} />
-                <StatBox icon="💰" label="Pending Fees" value={`₹${pendingTotal.toLocaleString()}`} sub={nextDue ? `Due: ${new Date(nextDue.dueDate).toLocaleDateString("en-IN")}` : "All clear"} color={pendingTotal > 0 ? "#ef4444" : "#16a34a"} />
-                <StatBox icon="📊" label="Fee Status" value={student.feeStatus} sub={`Monthly: ₹${student.fee?.toLocaleString()}`} color={student.feeStatus === "paid" ? "#16a34a" : "#f59e0b"} />
+                <StatBox icon="💰" label="Pending Dues" value={pendingTotal > 0 ? `₹${pendingTotal.toLocaleString()}` : "All Clear"} sub={nextDue ? `Next due: ${new Date(nextDue.dueDate).toLocaleDateString("en-IN")}` : `${fees.length} record(s) on file`} color={pendingTotal > 0 ? "#ef4444" : "#16a34a"} />
+                <StatBox icon="💵" label="Monthly Fee" value={`₹${student.fee?.toLocaleString()}`} sub={`Status: ${student.feeStatus}`} color={student.feeStatus === "paid" ? "#16a34a" : student.feeStatus === "overdue" ? "#ef4444" : "#f59e0b"} />
                 <StatBox icon="📚" label="Subjects" value={student.subjects?.length || 0} sub="enrolled" color="#4f46e5" />
               </div>
 
@@ -215,22 +294,79 @@ export default function UserProfile() {
                 </div>
               )}
 
-              {attendance.length > 0 && (
+              {sortedAttendance.length > 0 && (
                 <div className="user-profile__card">
-                  <div className="user-profile__card-title">📅 Attendance (Last 30 Days)</div>
+                  <div className="user-profile__card-title" style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                    <span>📅 Attendance — Last 30 Days</span>
+                    <span style={{ fontSize: 12, fontWeight: 400, color: "#888" }}>← older · newer →</span>
+                  </div>
                   <div className="user-profile__attendance-dots">
-                    {[...attendance].reverse().slice(0, 30).map((a, i) => (
-                      <div key={i} title={new Date(a.date).toLocaleDateString("en-IN")}
+                    {sortedAttendance.slice(-30).map((a, i) => (
+                      <div key={i} title={`${new Date(a.date).toLocaleDateString("en-IN")} — ${a.present ? "Present" : "Absent"}`}
                         className="user-profile__attendance-dot"
                         style={{ backgroundColor: a.present ? "#16a34a" : "#ef4444" }}
                       />
                     ))}
                   </div>
                   <div className="user-profile__attendance-legend">
-                    <span>🟢 Present</span><span>🔴 Absent</span>
+                    <span>🟢 Present ({presentDays})</span>
+                    <span>🔴 Absent ({sortedAttendance.length - presentDays})</span>
+                    <span style={{ marginLeft: "auto", color: "#888" }}>{sortedAttendance.length} total records</span>
                   </div>
                 </div>
               )}
+
+              <div className="user-profile__card">
+                <div className="user-profile__card-title">📝 My Notes <span style={{ fontSize: 11, fontWeight: 400, color: "#aaa", marginLeft: 8 }}>Only visible to you</span></div>
+                <div className="user-profile__notes-form">
+                  <textarea
+                    className="user-profile__notes-input"
+                    placeholder="Write a note..."
+                    value={noteText}
+                    onChange={e => setNoteText(e.target.value)}
+                    rows={2}
+                  />
+                  <Button size="sm" onClick={handleAddNote} disabled={noteSaving || !noteText.trim()}>
+                    {noteSaving ? "Saving..." : "+ Add Note"}
+                  </Button>
+                </div>
+                {notes.length === 0 ? (
+                  <p className="user-profile__notes-empty">No notes yet. Add your first note above.</p>
+                ) : (
+                  <div className="user-profile__notes-list">
+                    {[...notes].reverse().map(note => (
+                      <div key={note._id} className="user-profile__note-item">
+                        {editingNoteId === note._id ? (
+                          <>
+                            <textarea
+                              className="user-profile__notes-input"
+                              value={editingNoteText}
+                              onChange={e => setEditingNoteText(e.target.value)}
+                              rows={2}
+                              autoFocus
+                            />
+                            <div className="user-profile__note-meta">
+                              <button className="user-profile__note-save" onClick={() => handleEditNote(note._id)}>Save</button>
+                              <button className="user-profile__note-delete" onClick={() => { setEditingNoteId(null); setEditingNoteText(""); }}>Cancel</button>
+                            </div>
+                          </>
+                        ) : (
+                          <>
+                            <p className="user-profile__note-text">{note.text}</p>
+                            <div className="user-profile__note-meta">
+                              <span>{new Date(note.addedAt).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })}</span>
+                              <div style={{ display: "flex", gap: 8 }}>
+                                <button className="user-profile__note-save" onClick={() => { setEditingNoteId(note._id); setEditingNoteText(note.text); }}>Edit</button>
+                                <button className="user-profile__note-delete" onClick={() => handleDeleteNote(note._id)}>Delete</button>
+                              </div>
+                            </div>
+                          </>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
             </>
           ) : (
             <div className="user-profile__card">
@@ -306,19 +442,6 @@ export default function UserProfile() {
         </div>
       </Modal>
 
-      <Modal isOpen={showRegenerate2FAModal} onClose={() => { setShowRegenerate2FAModal(false); setQrCode(""); setSecret(""); }} title="🔄 Regenerate 2FA">
-        <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
-          <p style={{ fontSize: "14px", color: "#374151" }}>Scan the new QR code with your authenticator app. The old code will stop working.</p>
-          {qrCode && <img src={qrCode} alt="2FA QR Code" className="user-profile__qr-image" />}
-          {secret && (
-            <div className="user-profile__secret-box">
-              <div className="user-profile__secret-label">Manual entry code:</div>
-              <code style={{ fontSize: "13px", wordBreak: "break-all" }}>{secret}</code>
-            </div>
-          )}
-          <Button onClick={() => { setShowRegenerate2FAModal(false); setQrCode(""); setSecret(""); }}>Done</Button>
-        </div>
-      </Modal>
     </Layout>
   );
 }

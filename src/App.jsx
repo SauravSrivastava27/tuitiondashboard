@@ -2,19 +2,19 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import StudentList from "./pages/StudentList";
 import StudentForm from "./pages/StudentForm";
 import StudentDetails from "./pages/StudentDetails";
-import StudentProfile from "./pages/StudentProfile";
 import StudentFees from "./pages/StudentFees";
 import UserProfile from "./pages/UserProfile";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import ForgotPassword from "./pages/ForgotPassword";
-import First2FASetup from "./pages/First2FASetup";
 import Landing from "./pages/Landing";
 import AdminDashboard from "./pages/AdminDashboard";
 import AdminStudentManagement from "./pages/AdminStudentManagement";
 import AdminPanel from "./pages/AdminPanel";
 import AdminFeeManagement from "./pages/AdminFeeManagement";
 import AdminReports from "./pages/AdminReports";
+import Setup from "./pages/Setup";
+import GoogleCallback from "./pages/GoogleCallback";
 
 function PrivateRoute({ children }) {
   const token = localStorage.getItem("token");
@@ -37,8 +37,9 @@ export default function App() {
         <Route path="/" element={<Landing />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/setup" element={<Setup />} />
+        <Route path="/auth/callback" element={<GoogleCallback />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
-        <Route path="/setup-2fa" element={<First2FASetup />} />
 
         {/* Admin routes */}
         <Route path="/admin/dashboard" element={<AdminRoute><AdminDashboard /></AdminRoute>} />

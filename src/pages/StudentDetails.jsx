@@ -109,15 +109,31 @@ export default function StudentDetails() {
               </Card>
             )}
 
-            {progress.attendance?.length > 0 && (
-              <Card title="📅 Recent Attendance">
-                <div className="student-details__attendance-summary">
-                  <div><strong>Total Days: </strong>{progress.attendance.length}</div>
-                  <div><strong>Present: </strong><span className="student-details__present">{progress.attendance.filter(a => a.present).length}</span></div>
-                  <div><strong>Absent: </strong><span className="student-details__absent">{progress.attendance.filter(a => !a.present).length}</span></div>
-                </div>
-              </Card>
-            )}
+            {progress.attendance?.length > 0 && (() => {
+              const sorted = [...progress.attendance].sort((a, b) => new Date(a.date) - new Date(b.date));
+              const last30 = sorted.slice(-30);
+              const presentCount = last30.filter(a => a.present).length;
+              return (
+                <Card title="📅 Recent Attendance">
+                  <div className="student-details__attendance-dots">
+                    {last30.map((a, i) => (
+                      <div
+                        key={i}
+                        title={`${new Date(a.date).toLocaleDateString("en-IN")} — ${a.present ? "Present" : "Absent"}`}
+                        className={`student-details__dot student-details__dot--${a.present ? "present" : "absent"}`}
+                      />
+                    ))}
+                  </div>
+                  <div className="student-details__attendance-legend">
+                    <span className="student-details__present">■ Present</span>
+                    <span className="student-details__absent">■ Absent</span>
+                    <span className="student-details__attendance-stat">
+                      {presentCount}/{last30.length} days ({Math.round((presentCount / last30.length) * 100)}%)
+                    </span>
+                  </div>
+                </Card>
+              );
+            })()}
           </>
         )}
 
